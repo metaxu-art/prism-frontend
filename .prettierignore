@@ -1,0 +1,10 @@
+*.png
+*.ttf
+*.gif
+*.jpg
+*.mp4
+*.svg
+node_modules
+.husky
+public
+.next

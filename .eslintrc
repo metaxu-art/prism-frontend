@@ -1,0 +1,42 @@
+{
+	"extends": [
+		"next",
+		"next/core-web-vitals",
+		"plugin:react/recommended",
+		"plugin:prettier/recommended",
+		"prettier"
+	],
+	"rules": {
+		"react/display-name": 0,
+		"react/prop-types": 0,
+		"react/react-in-jsx-scope": 0,
+		"prettier/prettier": [
+			"error",
+			{
+				"endOfLine": "auto"
+			}
+		],
+		"no-unused-vars": "warn", // or "@typescript-eslint/no-unused-vars": "off",
+		"unused-imports/no-unused-imports": "error",
+		"unused-imports/no-unused-vars": [
+			"warn",
+			{
+				"vars": "all",
+				"varsIgnorePattern": "^_",
+				"args": "after-used",
+				"argsIgnorePattern": "^_"
+			}
+		],
+		"@next/next/no-img-element": "off"
+	},
+	"plugins": ["react", "prettier", "unused-imports"],
+	"env": {
+		"browser": true
+	},
+	"settings": {
+		"react": {
+			"version": "detect"
+		}
+	},
+	"ignorePatterns": ["src/assets/*"]
+}
