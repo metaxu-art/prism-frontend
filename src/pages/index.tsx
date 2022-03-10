@@ -1,4 +1,5 @@
 import type { NextPage } from 'next';
+import Head from 'next/head';
 import React, { useContext } from 'react';
 import UserNotConnected from '_atoms/UserNotConnected';
 import NavigationBar from '_organisms/NavigationBar';
@@ -14,6 +15,9 @@ const Home: NextPage = () => {
 
 	return (
 		<div className="w-full h-full overflow-y-auto">
+			<Head>
+				<title>Prism</title>
+			</Head>
 			<NavigationBar />
 			<div className="w-full h-full max-w-[1500px] mx-auto flex justify-center items-center px-10">
 				{!isUserAuthenticated && <UserNotConnected />}
