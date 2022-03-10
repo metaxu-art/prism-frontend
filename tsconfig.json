@@ -14,15 +14,15 @@
 		"isolatedModules": true,
 		"jsx": "preserve",
 		"incremental": true,
-		"baseUrl": "./src",
+		"baseUrl": ".",
 		"paths": {
-			"_atoms/*": ["components/atoms/*"],
-			"_molecules/*": ["components/molecules/*"],
-			"_organisms/*": ["components/organisms/*"],
-			"_svgs/*": ["assets/svgs/*"],
-			"_gifs/*": ["assets/gifs/*"],
-			"_images/*": ["assets/images/*"],
-			"_utils/*": ["utils/*"]
+			"_atoms/*": ["src/components/atoms/*"],
+			"_images/*": ["public/images/*"],
+			"_molecules/*": ["src/components/molecules/*"],
+			"_organisms/*": ["src/components/organisms/*"],
+			"_svgs/*": ["src/assets/svgs/*"],
+			"_gifs/*": ["src/assets/gifs/*"],
+			"_utils/*": ["src/utils/*"]
 		}
 	},
 	"include": ["next-env.d.ts", "**/*.ts", "**/*.tsx"],
