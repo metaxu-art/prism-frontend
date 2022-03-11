@@ -17,7 +17,7 @@ const Home: NextPage = () => {
 			style={{
 				backgroundImage: 'url("/images/background-image.png")',
 			}}
-			className="relative w-full h-full flex flex-col overflow-y-auto"
+			className="relative w-screen h-screen flex flex-col overflow-y-auto"
 		>
 			<Head>
 				<title>Prism</title>
@@ -25,7 +25,7 @@ const Home: NextPage = () => {
 
 			<NavigationBar />
 
-			<div className="flex-1 w-full max-w-[1536px] mx-auto flex justify-center items-center">
+			<div className="flex-1 w-full overflow-hidden max-w-[1536px] mx-auto flex justify-center items-center">
 				{!isUserAuthenticated && (
 					<div className="w-full px-10">
 						{authenticationStatus === AuthenticationStatus.Idle && <UserNotConnected />}
