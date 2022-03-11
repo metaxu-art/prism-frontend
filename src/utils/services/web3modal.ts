@@ -28,6 +28,7 @@ export const web3ModalConnect = async () => {
 		providerOptions,
 		lightboxOpacity: 0.8,
 		theme: 'dark',
+		cacheProvider: true, // stores provider that was used for the first time
 	});
 
 	let instance;

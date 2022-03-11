@@ -4,7 +4,7 @@ import NFTView from './NFTView';
 
 export const LoginView = () => {
 	return (
-		<div className="w-full h-full bg-red-200 flex">
+		<div className="w-full h-full flex overflow-hidden">
 			<NFTView />
 			<EditNFTView />
 		</div>

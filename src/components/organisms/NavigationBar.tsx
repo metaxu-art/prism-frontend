@@ -14,8 +14,8 @@ const NavigationBar = () => {
 	};
 
 	return (
-		<div className="w-full py-8 border-b-[3px] border-white bg-black">
-			<div className="flex justify-between max-w-[1600px] mx-auto px-10">
+		<div className="w-full sticky top-0 z-10 py-4 2xl:py-8 border-b-[3px] border-white bg-black">
+			<div className="flex justify-between max-w-[1536px] mx-auto px-10 2xl:px-0">
 				<span className="text-3xl font-semibold text-white">PRISM</span>
 				<div className="w-full max-w-[260px]">
 					<PrimaryButton onClick={isUserAuthenticated ? logOut : login}>
