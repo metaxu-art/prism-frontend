@@ -1,12 +1,17 @@
 import React from 'react';
-
+import { Inventory as InventoryInterface } from '_utils/interfaces/inventory';
 import Inventory from './Inventory';
 
-const Inventories = () => {
+type Props = {
+	onInventoryToggled?: (index: number) => void;
+	inventories?: InventoryInterface[];
+};
+
+const Inventories: React.FC<Props> = ({ onInventoryToggled = () => {}, inventories = [] }) => {
 	return (
 		<>
-			{[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17].map((id) => (
-				<Inventory key={id} />
+			{inventories.map((inventory, i) => (
+				<Inventory onInventoryToggled={() => onInventoryToggled(i)} key={i} inventory={inventory} />
 			))}
 
 			{/* {[0, 7].map((id) => (

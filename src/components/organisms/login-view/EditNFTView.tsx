@@ -3,10 +3,17 @@ import PrimaryButton from '_atoms/buttons/Primary';
 import SecondaryButton from '_atoms/buttons/Secondary';
 import DropDownMenu from '_molecules/drop-down-menu/DropDownMenu';
 import Inventories from '_molecules/inventories/Inventories';
+
 import MetaverseCheckBoxes from '_molecules/MetaverseCheckBoxes';
 import { Metaverse } from '_utils/enums/metaverse';
+import { Inventory } from '_utils/interfaces/inventory';
 
-const EditNFTView = () => {
+type Props = {
+	onInventoryToggled?: (index: number) => void;
+	currentInventories?: Inventory[];
+};
+
+const EditNFTView: React.FC<Props> = ({ currentInventories, onInventoryToggled }) => {
 	const [isNftReadyToPublish, setNftReadyToPublishStatus] = useState(false);
 	const [selectedMetaverses, setSelectedCheckBoxMetaverses] = useState<Metaverse[]>([]);
 
@@ -31,7 +38,7 @@ const EditNFTView = () => {
 
 	return (
 		<div className="flex-1 h-full flex flex-col bg-white/80">
-			<div className="flex py-5 2xl:py-10 px-5">
+			<div className="w-full flex py-5 max-w-[700px] mx-auto 2xl:py-10 px-5">
 				<div className="flex-1 px-5">
 					<DropDownMenu>Project</DropDownMenu>
 				</div>
@@ -45,8 +52,10 @@ const EditNFTView = () => {
 				</span>
 			</div>
 
-			<div className="flex-1 overflow-y-auto p-10 2xl:p-14">
-				{!isNftReadyToPublish && <Inventories />}
+			<div className="w-full flex-1 overflow-y-auto p-10 2xl:p-14 max-w-[700px] mx-auto">
+				{!isNftReadyToPublish && (
+					<Inventories inventories={currentInventories} onInventoryToggled={onInventoryToggled} />
+				)}
 				{isNftReadyToPublish && (
 					<MetaverseCheckBoxes
 						currentSelectedMetaverses={selectedMetaverses}
@@ -55,7 +64,7 @@ const EditNFTView = () => {
 				)}
 			</div>
 
-			<div className="flex px-10 pb-10">
+			<div className="w-full flex px-10 pb-10 max-w-[700px] mx-auto">
 				{isNftReadyToPublish && (
 					<div className="flex-1 pr-10">
 						<PrimaryButton onClick={() => setNftReadyToPublishStatus(false)} color="black">

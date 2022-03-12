@@ -2,9 +2,11 @@ import React from 'react';
 import Image from 'next/image';
 import CyberWalker from '_images/cyberskywalker-1.png';
 
-const NFTView = () => {
+type Props = {};
+
+const NFTView: React.FC<Props> = ({ children }) => {
 	return (
-		<div className="flex-1 flex flex-col 2xl:border-white 2xl:border-l-4 ">
+		<div className="flex-1 flex flex-col">
 			<div className="flex-1 flex justify-center items-center">
 				<div className="p-4 bg-[#E6C5FA] my-4">
 					<div className="relative w-[300px] h-[300px] 2xl:w-[500px] 2xl:h-[500px]">
@@ -21,16 +23,10 @@ const NFTView = () => {
 					<span>CURRENT RANK: #11</span>
 				</div>
 			</div>
-			<div className="flex flex-wrap p-5 pt-8 justify-center lg:justify-start">
-				{[0, 1, 2, 3, 4, 5, 6].map((id) => {
-					return (
-						<div key={id} className="pr-4 pb-6">
-							<span className="bg-[#E6C5FA] px-3 py-1 rounded font-semibold text-sm">
-								Cyberglasses
-							</span>
-						</div>
-					);
-				})}
+			<div className="flex flex-wrap p-5 pt-8 justify-center lg:justify-start min-h-[20px]">
+				{React.Children.map(children, (child) =>
+					React.isValidElement(child) ? React.cloneElement(child, {}) : child,
+				)}
 			</div>
 		</div>
 	);
