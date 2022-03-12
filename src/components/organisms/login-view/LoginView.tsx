@@ -59,17 +59,7 @@ export const LoginView = () => {
 	};
 	return (
 		<div className="w-full h-full flex">
-			<NFTView>
-				{currentInventories
-					.filter((inv) => inv.checked)
-					.map(({ name }, i) => {
-						return (
-							<div key={i} className="pr-4 pb-6">
-								<span className="bg-[#E6C5FA] px-3 py-1 rounded font-semibold text-sm">{name}</span>
-							</div>
-						);
-					})}
-			</NFTView>
+			<NFTView selectedInvetories={currentInventories.filter((inv) => inv.checked)} />
 			<EditNFTView
 				onInventoryToggled={onInventoryToggled}
 				currentInventories={currentInventories}
