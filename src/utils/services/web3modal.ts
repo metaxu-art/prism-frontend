@@ -35,7 +35,7 @@ export const web3ModalConnect = async () => {
 	try {
 		instance = await web3Modal.connect();
 	} catch (e) {
-		console.error('web3Modal Error:', e);
+		console.error('web3modal[web3ModalConnect]:', e);
 		return;
 	}
 

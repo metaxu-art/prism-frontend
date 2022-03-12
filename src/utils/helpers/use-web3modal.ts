@@ -19,17 +19,18 @@ export const useWeb3Modal = () => {
 			// provider.addListener('accountsChanged', onAccountsChanged); // doesn't work
 
 			const network = await provider.getNetwork();
-			console.log(network.name);
+			// console.log(network.name);
 			if (network.name !== 'matic') {
-				return setUserAuthenticatingStatus(AuthenticationStatus.WrongNetwork);
-			}
-			const signer = provider.getSigner();
-			const signerAddress = await signer.getAddress();
+				setUserAuthenticatingStatus(AuthenticationStatus.WrongNetwork);
+			} else {
+				const signer = provider.getSigner();
+				const signerAddress = await signer.getAddress();
 
-			setUserAuthenticatingStatus(AuthenticationStatus.Success);
-			setSigner({
-				signerAddress: signerAddress,
-			});
+				setUserAuthenticatingStatus(AuthenticationStatus.Success);
+				setSigner({
+					signerAddress: signerAddress,
+				});
+			}
 		} else {
 			setUserAuthenticatingStatus(AuthenticationStatus.Idle);
 		}

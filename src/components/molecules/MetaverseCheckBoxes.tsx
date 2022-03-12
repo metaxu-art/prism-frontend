@@ -1,30 +1,30 @@
 import React from 'react';
 import CheckBoxLabel from '_molecules/CheckBoxLabel';
+import { Metaverse, metaverseValues } from '_utils/enums/metaverse';
 
 type Props = {
-	metaverseNames?: string[];
-	setCurrentCheckBoxIndex?: (i: number) => void;
-	currentCheckBoxIndex?: number;
+	onMetaverseCheckboxToggled?: (metaverse: Metaverse, b: boolean) => void;
+	currentSelectedMetaverses?: Metaverse[];
 };
 
 const MetaverseCheckBoxes: React.FC<Props> = ({
-	metaverseNames = [],
-	setCurrentCheckBoxIndex = () => {},
-	currentCheckBoxIndex,
+	onMetaverseCheckboxToggled = () => {},
+	currentSelectedMetaverses = [],
 }) => {
 	return (
 		<div>
-			{metaverseNames.map((metaverseName, i) => {
-				let bottomPadding = i !== metaverseNames.length ? 'pb-10' : 'pb-0';
+			{metaverseValues.map((metaverseValue, i) => {
+				const bottomPadding = i !== metaverseValues.length ? 'pb-10' : 'pb-0';
+				const isActive = currentSelectedMetaverses.includes(metaverseValue);
 				return (
 					<div key={i} className={`${bottomPadding}`}>
 						<CheckBoxLabel
 							onClick={() => {
-								setCurrentCheckBoxIndex(i);
+								onMetaverseCheckboxToggled(metaverseValue, !isActive);
 							}}
-							isActive={currentCheckBoxIndex === i}
+							isActive={isActive}
 						>
-							{metaverseName}
+							{metaverseValue}
 						</CheckBoxLabel>
 					</div>
 				);

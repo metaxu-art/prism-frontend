@@ -4,12 +4,30 @@ import SecondaryButton from '_atoms/buttons/Secondary';
 import DropDownMenu from '_molecules/drop-down-menu/DropDownMenu';
 import Inventories from '_molecules/inventories/Inventories';
 import MetaverseCheckBoxes from '_molecules/MetaverseCheckBoxes';
-
-const metaverses = ['PFP', 'SANDBOX 3D Voxel', 'WWWEBB full body Sprite'];
+import { Metaverse } from '_utils/enums/metaverse';
 
 const EditNFTView = () => {
 	const [isNftReadyToPublish, setNftReadyToPublishStatus] = useState(false);
-	const [selectedCheckBoxMetaverseIndex, setSelectedCheckBoxMetaverseIndex] = useState<number>(-1);
+	const [selectedMetaverses, setSelectedCheckBoxMetaverses] = useState<Metaverse[]>([]);
+
+	const onMetaverseCheckboxToggled = (metaverse: Metaverse, checked: boolean) => {
+		if (checked) {
+			//add metaverse
+			const metas = [...selectedMetaverses];
+			metas.push(metaverse);
+			setSelectedCheckBoxMetaverses(metas);
+		} else {
+			//remove metaverse
+			setSelectedCheckBoxMetaverses((oldMetaverses) => {
+				return oldMetaverses.filter((oldMetaverse) => oldMetaverse !== metaverse);
+			});
+		}
+	};
+
+	const onPublishButtonClicked = () => {
+		if (!isNftReadyToPublish) setNftReadyToPublishStatus(true);
+		else console.log(selectedMetaverses);
+	};
 
 	return (
 		<div className="flex-1 h-full flex flex-col bg-white/80">
@@ -31,9 +49,8 @@ const EditNFTView = () => {
 				{!isNftReadyToPublish && <Inventories />}
 				{isNftReadyToPublish && (
 					<MetaverseCheckBoxes
-						metaverseNames={metaverses}
-						currentCheckBoxIndex={selectedCheckBoxMetaverseIndex}
-						setCurrentCheckBoxIndex={setSelectedCheckBoxMetaverseIndex}
+						currentSelectedMetaverses={selectedMetaverses}
+						onMetaverseCheckboxToggled={onMetaverseCheckboxToggled}
 					/>
 				)}
 			</div>
@@ -48,14 +65,8 @@ const EditNFTView = () => {
 				)}
 				<div className="flex-1">
 					<SecondaryButton
-						isActive={!isNftReadyToPublish || selectedCheckBoxMetaverseIndex !== -1}
-						onClick={() => {
-							if (!isNftReadyToPublish) {
-								setNftReadyToPublishStatus(true);
-							} else {
-								console.log(`SELECTED METAVERSE: ${metaverses[selectedCheckBoxMetaverseIndex]}`);
-							}
-						}}
+						isActive={!isNftReadyToPublish || selectedMetaverses.length !== 0}
+						onClick={onPublishButtonClicked}
 					>
 						<p className="py-3 text-2xl">Publish {'>>'}</p>
 					</SecondaryButton>

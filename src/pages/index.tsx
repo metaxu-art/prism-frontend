@@ -25,7 +25,7 @@ const Home: NextPage = () => {
 
 			<NavigationBar />
 
-			<div className="flex-1 w-full overflow-hidden max-w-[1536px] mx-auto flex justify-center items-center">
+			<div className="flex-1 w-full overflow-hidden mx-auto flex justify-center items-center">
 				{!isUserAuthenticated && (
 					<div className="w-full px-10">
 						{authenticationStatus === AuthenticationStatus.Idle && <UserNotConnected />}
