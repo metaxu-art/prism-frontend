@@ -18,7 +18,7 @@ const DropDownMenu: React.FC<Props> = ({ children }) => {
 				<FiChevronDown className="text-3xl" />
 			</div>
 			{isOpen && (
-				<div className="absolute w-full overflow-y-auto max-h-[200px] border border-black">
+				<div className="absolute z-10 w-full overflow-y-auto max-h-[200px] border border-black">
 					{[0, 1, 2, 3, 4, 5, 6].map((id) => {
 						const itemName = `Item ${id}`;
 						return (
