@@ -31,7 +31,7 @@ const NFTView: React.FC<Props> = ({ selectedInvetories = [] }) => {
 					<span>CURRENT RANK: #11</span>
 				</div>
 			</div>
-			<div className="flex flex-wrap p-5 pt-8 justify-center lg:justify-start min-h-[20px]">
+			<div className="flex flex-wrap p-5 pt-8 justify-center lg:justify-start h-[100px] overflow-y-auto">
 				{selectedInvetories.map(({ name }, i) => {
 					return (
 						<div key={i} className="pr-4 pb-6">
