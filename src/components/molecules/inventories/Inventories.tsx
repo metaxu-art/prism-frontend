@@ -13,10 +13,6 @@ const Inventories: React.FC<Props> = ({ onInventoryToggled = () => {}, inventori
 			{inventories.map((inventory, i) => (
 				<Inventory onInventoryToggled={() => onInventoryToggled(i)} key={i} inventory={inventory} />
 			))}
-
-			{/* {[0, 7].map((id) => (
-				<Inventory key={id} />
-			))} */}
 		</>
 	);
 };
