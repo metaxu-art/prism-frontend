@@ -44,7 +44,7 @@ export const LoginView = () => {
 	const [currentInventories, setCurrentInventories] = useState<Inventory[]>([...inventories]);
 
 	const onInventoryToggled = (index: number) => {
-		console.log(index);
+		// console.log(index);
 		setCurrentInventories((oldInventories) => {
 			return oldInventories.map((oldInventory, oldInvetoryIndex) => {
 				if (index === oldInvetoryIndex) {
