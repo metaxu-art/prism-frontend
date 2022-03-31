@@ -11,7 +11,7 @@ const PrimaryButton: React.FC<Props> = ({ onClick, children, color = 'white' }) 
 	return (
 		<button
 			onClick={onClick}
-			className={`w-full border-2 px-3 py-1 text-lg hover:opacity-50 transition ease-in ${style}`}
+			className={`w-full border-2 px-3 py-1 text-lg hover:opacity-60 transition ease-in ${style}`}
 		>
 			{children}
 		</button>

@@ -23,7 +23,8 @@ const DropDownMenu: React.FC<Props> = ({ children }) => {
 						const itemName = `Item ${id}`;
 						return (
 							<DropDownMenuItem
-								onClick={() => {
+								onClick={(e) => {
+									e.stopPropagation();
 									setCurrentTitle(itemName);
 									setIsOpenStatus(false);
 								}}

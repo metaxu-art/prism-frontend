@@ -29,6 +29,7 @@ export const useWeb3Modal = () => {
 				setUserAuthenticatingStatus(AuthenticationStatus.Success);
 				setSigner({
 					signerAddress: signerAddress,
+					jsonRpcSigner: signer,
 				});
 			}
 		} else {
