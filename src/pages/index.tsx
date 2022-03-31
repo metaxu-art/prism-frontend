@@ -1,19 +1,26 @@
 import type { NextPage } from 'next';
 import Head from 'next/head';
-import React, { useContext } from 'react';
+import React, { useContext, useEffect } from 'react';
 import NavigationBar from '_organisms/NavigationBar';
 import { StoreContext } from '_utils/context-api/store-context';
 import UserNotConnected from '_atoms/UserNotConnected';
 import WaitingForWalletConnection from '_atoms/WaitingForWalletConnection';
 import ConnectedToWrongNetwork from '_atoms/ConnectedToWrongNetwork';
 import { AuthenticationStatus } from '_utils/enums/authentication-status';
-import { LoginView } from '_organisms/login-view/LoginView';
+import LoginView from '_organisms/login-view/LoginView';
 
 const Home: NextPage = () => {
 	const { isUserAuthenticated, authenticationStatus } = useContext(StoreContext);
 
+	useEffect(() => {}, []);
+
+	const onDocumentClick = () => {
+		// handle dropdown menu close event
+	};
+
 	return (
 		<div
+			onClick={onDocumentClick}
 			style={{
 				backgroundImage: 'url("/images/background-image.png")',
 			}}

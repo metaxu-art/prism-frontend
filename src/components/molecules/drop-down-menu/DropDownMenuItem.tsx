@@ -1,7 +1,7 @@
 import React from 'react';
 
 type Props = {
-	onClick?: () => void;
+	onClick?: React.MouseEventHandler<HTMLDivElement>;
 };
 
 const DropDownMenuItem: React.FC<Props> = ({ onClick, children }) => {

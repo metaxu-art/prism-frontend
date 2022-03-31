@@ -1,6 +1,14 @@
 /** @type {import('next').NextConfig} */
+
+require('dotenv').config();
 const nextConfig = {
+	env: {
+		NODEENV: process.env.NODEENV,
+	},
 	reactStrictMode: true,
+	images: {
+		domains: ['sentientmachine.mypinata.cloud']
+	},
 	webpack(config) {
 		config.module.rules.push({
 			test: /\.svg$/,
