@@ -13,6 +13,7 @@
 		"test": "yarn lint && yarn format"
 	},
 	"dependencies": {
+		"@types/react-dom": "^17.0.14",
 		"@walletconnect/web3-provider": "^1.7.4",
 		"axios": "^0.26.1",
 		"dotenv": "^16.0.0",

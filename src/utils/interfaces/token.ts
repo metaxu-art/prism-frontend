@@ -8,7 +8,6 @@ export interface Token {
 	platform: string;
 	tokenID: number;
 	website: string;
-	checked: boolean;
 }
 //     string name;
 //     uint256 maxSupply;

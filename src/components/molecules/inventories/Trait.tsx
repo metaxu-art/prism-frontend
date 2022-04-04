@@ -6,9 +6,14 @@ import { Token } from '_utils/interfaces/token';
 type Props = {
 	trait: Token;
 	onTraitToggled?: () => void;
+	checked?: boolean;
 };
 
-const Trait: React.FC<Props> = ({ trait, onTraitToggled: onTokenToggled = () => {} }) => {
+const Trait: React.FC<Props> = ({
+	trait,
+	onTraitToggled: onTokenToggled = () => {},
+	checked = false,
+}) => {
 	return (
 		<div className="flex items-center justify-between pb-5">
 			<div className="flex-1 flex items-center">
@@ -32,7 +37,7 @@ const Trait: React.FC<Props> = ({ trait, onTraitToggled: onTokenToggled = () => 
 				</div>
 
 				<div>
-					<CheckBox isActive={trait.checked} onClick={onTokenToggled} />
+					<CheckBox isActive={checked} onClick={onTokenToggled} />
 				</div>
 			</div>
 		</div>
