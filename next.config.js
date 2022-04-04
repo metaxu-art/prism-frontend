@@ -7,7 +7,7 @@ const nextConfig = {
 	},
 	reactStrictMode: true,
 	images: {
-		domains: ['sentientmachine.mypinata.cloud']
+		domains: ['sentientmachine.mypinata.cloud', 'gateway.pinata.cloud'],
 	},
 	webpack(config) {
 		config.module.rules.push({

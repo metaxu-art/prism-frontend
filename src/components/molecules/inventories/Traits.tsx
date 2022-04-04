@@ -3,16 +3,29 @@ import { Token } from '_utils/interfaces/token';
 import Trait from './Trait';
 
 type Props = {
-	onTraitToggled?: (index: number) => void;
+	onTraitToggled?: (trait: Token, checked: boolean) => void;
 	traits?: Token[];
+	selectedTraitIds?: number[];
 };
 
-const Traits: React.FC<Props> = ({ onTraitToggled = () => {}, traits = [] }) => {
+const Traits: React.FC<Props> = ({
+	onTraitToggled = () => {},
+	traits = [],
+	selectedTraitIds = [],
+}) => {
 	return (
 		<>
-			{traits.map((trait, i) => (
-				<Trait onTraitToggled={() => onTraitToggled(i)} key={i} trait={trait} />
-			))}
+			{traits.map((trait, i) => {
+				const checked = selectedTraitIds.includes(trait.tokenID);
+				return (
+					<Trait
+						onTraitToggled={() => onTraitToggled(trait, !checked)}
+						key={i}
+						trait={trait}
+						checked={checked}
+					/>
+				);
+			})}
 		</>
 	);
 };

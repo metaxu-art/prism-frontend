@@ -1,30 +1,37 @@
-import { ethers } from 'ethers';
-import React, { useContext, useState } from 'react';
-
+import axios from 'axios';
+import React, { useEffect, useState } from 'react';
+import BaseCenterModal from '_atoms/base-modals/CenterModal';
+// import { ethers } from 'ethers';
 import PrimaryButton from '_atoms/buttons/Primary';
 import SecondaryButton from '_atoms/buttons/Secondary';
 // import DropDownMenu from '_molecules/drop-down-menu/DropDownMenu';
 import Traits from '_molecules/inventories/Traits';
 import MetaverseCheckBoxes from '_molecules/MetaverseCheckBoxes';
-import { StoreContext } from '_utils/context-api/store-context';
 import { Metaverse } from '_utils/enums/metaverse';
 import { Token } from '_utils/interfaces/token';
-import config from '_utils/config/index';
-import abi from '../../../abi.json';
+// import config from '_utils/config/index';
+// import abi from '../../../abi.json';
+import Image from 'next/image';
 type Props = {
-	onTraitToggled?: (index: number) => void;
+	onTraitToggled?: (trait: Token, checked: boolean) => void;
+	setSelectedTraits?: React.Dispatch<React.SetStateAction<Token[]>>;
+	selectedTraits?: Token[];
 	onUnselectedButtonClick?: () => void;
-	allTokens?: Token[];
 };
 
 const EditNFTView: React.FC<Props> = ({
-	allTokens = [],
 	onTraitToggled,
 	onUnselectedButtonClick,
+	setSelectedTraits = () => {},
+	selectedTraits = [],
 }) => {
-	const { signer } = useContext(StoreContext);
+	const [allTokens, setAllTokens] = useState<Token[]>([]);
+	const [loading, setLoading] = useState<boolean>(true);
+	const [loadingText, setLoadingText] = useState('Loading traits...');
 	const [isNftReadyToPublish, setNftReadyToPublishStatus] = useState(false);
 	const [selectedMetaverses, setSelectedCheckBoxMetaverses] = useState<Metaverse[]>([]);
+	const [masterUrl, setMasterUrl] = useState<string>('');
+	const [isMasterUrlModalVisible, setMasterUrlVisibility] = useState(false);
 
 	const onMetaverseCheckboxToggled = (metaverse: Metaverse, checked: boolean) => {
 		if (checked) {
@@ -44,25 +51,66 @@ const EditNFTView: React.FC<Props> = ({
 		if (!isNftReadyToPublish) setNftReadyToPublishStatus(true);
 		else {
 			//Publish only to PFP
-			const selectedTraitIds = allTokens
-				.filter((token) => token.checked)
-				.map((token) => token.tokenID);
+			const selectedTraitIds = selectedTraits.map((token) => token.tokenID);
 
-			console.log('selectedTraitIds', selectedTraitIds);
-			const contract = new ethers.Contract(config.contractAddress, abi, signer?.jsonRpcSigner);
+			setLoadingText('Composing and uploading your NFT to IPFS...');
+			setLoading(true);
+
+			let res;
 			try {
-				const tx = await contract.editMaster(1, selectedTraitIds);
-				await tx.wait();
-				setNftReadyToPublishStatus(false);
+				res = await axios.patch('/token', {
+					traitIds: selectedTraitIds,
+					masterId: '42',
+				});
+				// https://gateway.pinata.cloud/ipfs/QmUg2GZk6qBbjMPbtkS2KmNspgUQCJ4smr1whZJCMGFmGP
 			} catch (e) {
 				console.error(e);
 			}
 
+			if (res?.data) {
+				setMasterUrl('https://gateway.pinata.cloud/ipfs/' + res.data.fileInfo.IpfsHash);
+				setMasterUrlVisibility(true);
+			}
+			setLoading(false);
+
+			// const contract = new ethers.Contract(config.contractAddress, abi, signer?.jsonRpcSigner);
+			// try {
+			// 	const tx = await contract.editMaster(1, selectedTraitIds);
+			// 	await tx.wait();
+			// 	setNftReadyToPublishStatus(false);
+			// } catch (e) {
+			// 	console.error(e);
+			// }
 			// console.log(selectedMetaverses);
 		}
 	};
 
-	const isSomeCheckboxesChecked = allTokens.some((token) => token.checked);
+	const fetchAllTokens = async () => {
+		const selectedTokensList: number[] = [];
+
+		let res;
+
+		try {
+			res = await axios.get('/tokens/traits');
+		} catch (e) {
+			console.error(e);
+		}
+
+		if (res?.data) {
+			const filteredTokens = res.data.tokens.filter((token: Token) =>
+				selectedTokensList.includes(token.tokenID),
+			);
+			setLoading(false);
+			setAllTokens(res.data.tokens);
+			setSelectedTraits(filteredTokens);
+		}
+	};
+
+	const componentDidMount = () => {
+		fetchAllTokens();
+	};
+
+	useEffect(componentDidMount, []);
 
 	return (
 		<div className="flex-1 h-full flex flex-col bg-white/80">
@@ -83,7 +131,7 @@ const EditNFTView: React.FC<Props> = ({
 			{!isNftReadyToPublish && (
 				<div className="w-full flex justify-end max-w-[700px] mx-auto py-4">
 					<button
-						disabled={!isSomeCheckboxesChecked}
+						disabled={selectedTraits.length === 0}
 						onClick={onUnselectedButtonClick}
 						className="bg-white hover:bg-gray-100 text-gray-800 font-semibold py-2 px-4 border border-gray-400 rounded shadow transition ease-in"
 					>
@@ -93,7 +141,13 @@ const EditNFTView: React.FC<Props> = ({
 			)}
 
 			<div className="w-full flex-1 overflow-y-auto p-10 2xl:p-14 max-w-[700px] mx-auto">
-				{!isNftReadyToPublish && <Traits traits={allTokens} onTraitToggled={onTraitToggled} />}
+				{!isNftReadyToPublish && (
+					<Traits
+						traits={allTokens}
+						onTraitToggled={onTraitToggled}
+						selectedTraitIds={selectedTraits.map((trait) => trait.tokenID)}
+					/>
+				)}
 				{isNftReadyToPublish && (
 					<MetaverseCheckBoxes
 						currentSelectedMetaverses={selectedMetaverses}
@@ -119,6 +173,38 @@ const EditNFTView: React.FC<Props> = ({
 					</SecondaryButton>
 				</div>
 			</div>
+			<BaseCenterModal modalVisible={loading}>
+				<div className="text-center">
+					<div className="pb-2">
+						<Image src="/loading-gif.gif" width={150} height={150} alt="Loading svg" />
+					</div>
+					<div className="text-white text-2xl">{loadingText}</div>
+				</div>
+			</BaseCenterModal>
+
+			<BaseCenterModal
+				modalVisible={isMasterUrlModalVisible}
+				handleGreyAreaClick={() => setMasterUrlVisibility(false)}
+			>
+				<div
+					onClick={(e) => e.stopPropagation()}
+					style={{
+						backgroundColor: 'rgba(255,255,255,0.65)',
+					}}
+					className="w-full max-w-[1200px] mx-auto bg-white text-center font-semibold border-2 border-[#B445D7] text-3xl py-16 px-20"
+				>
+					<div className="pb-2 font-bold text-3xl">
+						Congrats Champ! You have successfully created your on NFT! 🎉🥳
+					</div>
+					<a
+						className="text-2xl hover:text-blue-800 hover:underline transition ease-in-out"
+						href={masterUrl}
+						target="__blank"
+					>
+						{masterUrl}
+					</a>
+				</div>
+			</BaseCenterModal>
 		</div>
 	);
 };
