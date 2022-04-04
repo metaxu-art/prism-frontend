@@ -11,7 +11,7 @@ import { Metaverse } from '_utils/enums/metaverse';
 import { Token } from '_utils/interfaces/token';
 // import config from '_utils/config/index';
 // import abi from '../../../abi.json';
-import Image from 'next/image';
+
 type Props = {
 	onTraitToggled?: (trait: Token, checked: boolean) => void;
 	setSelectedTraits?: React.Dispatch<React.SetStateAction<Token[]>>;
@@ -176,7 +176,7 @@ const EditNFTView: React.FC<Props> = ({
 			<BaseCenterModal modalVisible={loading}>
 				<div className="text-center">
 					<div className="pb-2">
-						<Image src="/loading-gif.gif" width={150} height={150} alt="Loading svg" />
+						<img src="/loading-gif.gif" width={150} height={150} alt="Loading svg" />
 					</div>
 					<div className="text-white text-2xl">{loadingText}</div>
 				</div>
