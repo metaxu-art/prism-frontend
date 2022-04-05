@@ -2,12 +2,13 @@ import React from 'react';
 import Image from 'next/image';
 import CheckBox from '_atoms/CheckBox';
 import { Token } from '_utils/interfaces/token';
-import { FiArrowUp } from 'react-icons/fi';
+import { FiArrowUp, FiArrowDown } from 'react-icons/fi';
 type Props = {
 	trait: Token;
 	onTraitToggled?: () => void;
 	checked?: boolean;
 	onArrowUpClick?: () => void;
+	onArrowDownClick?: () => void;
 };
 
 const Trait: React.FC<Props> = ({
@@ -15,6 +16,7 @@ const Trait: React.FC<Props> = ({
 	onTraitToggled: onTokenToggled = () => {},
 	checked = false,
 	onArrowUpClick,
+	onArrowDownClick,
 }) => {
 	return (
 		<div className="flex items-center justify-between pb-5">
@@ -40,6 +42,12 @@ const Trait: React.FC<Props> = ({
 
 				<FiArrowUp
 					onClick={checked ? onArrowUpClick : undefined}
+					className={`${
+						checked ? 'opacity-100 cursor-pointer' : 'opacity-50 cursor-default'
+					} text-2xl`}
+				/>
+				<FiArrowDown
+					onClick={checked ? onArrowDownClick : undefined}
 					className={`${
 						checked ? 'opacity-100 cursor-pointer' : 'opacity-50 cursor-default'
 					} text-2xl`}

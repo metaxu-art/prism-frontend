@@ -7,6 +7,7 @@ type Props = {
 	traits?: Token[];
 	selectedTraitIds?: number[];
 	onTraitArrowUpClicked?: (tokenId: number) => void;
+	onTraitArrowDownClick?: (tokenId: number) => void;
 };
 
 const Traits: React.FC<Props> = ({
@@ -14,6 +15,7 @@ const Traits: React.FC<Props> = ({
 	traits = [],
 	selectedTraitIds = [],
 	onTraitArrowUpClicked = () => {},
+	onTraitArrowDownClick = () => {},
 }) => {
 	return (
 		<>
@@ -23,6 +25,7 @@ const Traits: React.FC<Props> = ({
 					<Trait
 						onTraitToggled={() => onTraitToggled(trait, !checked)}
 						onArrowUpClick={() => onTraitArrowUpClicked(trait.tokenID)}
+						onArrowDownClick={() => onTraitArrowDownClick(trait.tokenID)}
 						key={i}
 						trait={trait}
 						checked={checked}
