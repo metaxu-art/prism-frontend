@@ -17,6 +17,7 @@ type Props = {
 	setSelectedTraits?: React.Dispatch<React.SetStateAction<Token[]>>;
 	selectedTraits?: Token[];
 	onUnselectedButtonClick?: () => void;
+	onTraitArrowUpClicked?: (tokenId: number) => void;
 };
 
 const EditNFTView: React.FC<Props> = ({
@@ -24,6 +25,7 @@ const EditNFTView: React.FC<Props> = ({
 	onUnselectedButtonClick,
 	setSelectedTraits = () => {},
 	selectedTraits = [],
+	onTraitArrowUpClicked,
 }) => {
 	const [allTokens, setAllTokens] = useState<Token[]>([]);
 	const [loading, setLoading] = useState<boolean>(true);
@@ -146,6 +148,7 @@ const EditNFTView: React.FC<Props> = ({
 						traits={allTokens}
 						onTraitToggled={onTraitToggled}
 						selectedTraitIds={selectedTraits.map((trait) => trait.tokenID)}
+						onTraitArrowUpClicked={onTraitArrowUpClicked}
 					/>
 				)}
 				{isNftReadyToPublish && (

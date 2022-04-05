@@ -33,6 +33,17 @@ const LoginView = () => {
 		setSelectedTraits([]);
 	};
 
+	const onTraitArrowUpClicked = (tokenId: number) => {
+		const tempTraits = [...selectedTraits];
+		const token = tempTraits.find((trait) => tokenId === trait.tokenID);
+		if (token) {
+			const index = tempTraits.indexOf(token);
+			tempTraits.splice(index, 1);
+			tempTraits.splice(index + 1, 0, token);
+			setSelectedTraits(tempTraits);
+		}
+	};
+
 	return (
 		<div className="w-full h-full flex">
 			<NFTView selectedTraits={selectedTraits} />
@@ -41,6 +52,7 @@ const LoginView = () => {
 				onTraitToggled={onTraitToggled}
 				selectedTraits={selectedTraits}
 				setSelectedTraits={setSelectedTraits}
+				onTraitArrowUpClicked={onTraitArrowUpClicked}
 			/>
 		</div>
 	);
