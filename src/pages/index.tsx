@@ -7,7 +7,7 @@ import UserNotConnected from '_atoms/UserNotConnected';
 import WaitingForWalletConnection from '_atoms/WaitingForWalletConnection';
 import ConnectedToWrongNetwork from '_atoms/ConnectedToWrongNetwork';
 import { AuthenticationStatus } from '_utils/enums/authentication-status';
-import LoginView from '_organisms/login-view/LoginView';
+import SelectAdminComposeView from '_molecules/SelectAdminComposeView';
 
 const Home: NextPage = () => {
 	const { isUserAuthenticated, authenticationStatus } = useContext(StoreContext);
@@ -27,7 +27,7 @@ const Home: NextPage = () => {
 			className="relative w-screen h-screen flex flex-col overflow-y-auto"
 		>
 			<Head>
-				<title>Prism</title>
+				<title>Prism | Welcome</title>
 			</Head>
 
 			<NavigationBar />
@@ -46,7 +46,7 @@ const Home: NextPage = () => {
 						{authenticationStatus === AuthenticationStatus.UnknownError && <div>Unknown Error</div>}
 					</div>
 				)}
-				{isUserAuthenticated && AuthenticationStatus.Success && <LoginView />}
+				{isUserAuthenticated && AuthenticationStatus.Success && <SelectAdminComposeView />}
 			</div>
 		</div>
 	);

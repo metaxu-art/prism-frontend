@@ -1,5 +1,7 @@
 export interface Project {
+	id: number;
 	name: string;
-	projectURI: string;
-	managerAddress: string;
+	chef: string;
+	amountMasterNft: number;
+	amountCollection: number;
 }

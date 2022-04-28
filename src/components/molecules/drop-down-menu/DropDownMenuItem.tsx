@@ -7,7 +7,7 @@ type Props = {
 const DropDownMenuItem: React.FC<Props> = ({ onClick, children }) => {
 	return (
 		<div onClick={onClick} className="p-2 cursor-pointer bg-white hover:bg-gray-200">
-			<span>{children}</span>
+			<span className="font-semibold">{children}</span>
 		</div>
 	);
 };
