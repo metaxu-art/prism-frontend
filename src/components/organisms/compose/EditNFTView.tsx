@@ -2,13 +2,13 @@ import axios from 'axios';
 import React, { useEffect, useState } from 'react';
 import BaseCenterModal from '_atoms/base-modals/CenterModal';
 // import { ethers } from 'ethers';
-import PrimaryButton from '_atoms/buttons/Primary';
 import SecondaryButton from '_atoms/buttons/Secondary';
 // import DropDownMenu from '_molecules/drop-down-menu/DropDownMenu';
 import Traits from '_molecules/inventories/Traits';
 import MetaverseCheckBoxes from '_molecules/MetaverseCheckBoxes';
 import { Metaverse } from '_utils/enums/metaverse';
 import { Token } from '_utils/interfaces/token';
+import TertiaryButton from '_atoms/buttons/Tertiary';
 // import config from '_utils/config/index';
 // import abi from '../../../abi.json';
 
@@ -144,7 +144,7 @@ const EditNFTView: React.FC<Props> = ({
 				</div>
 			)}
 
-			<div className="w-full flex-1 overflow-y-auto p-10 2xl:p-14 max-w-[700px] mx-auto">
+			<div className="w-full flex-1 overflow-y-auto p-10 2xl:p-14 max-w-[700px] mx-auto mb-4">
 				{!isNftReadyToPublish && (
 					<Traits
 						traits={allTokens}
@@ -165,18 +165,18 @@ const EditNFTView: React.FC<Props> = ({
 			<div className="w-full flex px-10 pb-10 max-w-[700px] mx-auto">
 				{isNftReadyToPublish && (
 					<div className="flex-1 pr-10">
-						<PrimaryButton onClick={() => setNftReadyToPublishStatus(false)} color="black">
+						<SecondaryButton onClick={() => setNftReadyToPublishStatus(false)} color="black">
 							<p className="py-3 font-semibold text-xl">{'<<'}BACK TO EDIT</p>
-						</PrimaryButton>
+						</SecondaryButton>
 					</div>
 				)}
 				<div className="flex-1">
-					<SecondaryButton
+					<TertiaryButton
 						// isActive={!isNftReadyToPublish || selectedMetaverses.length !== 0}
 						onClick={onPublishButtonClicked}
 					>
 						<p className="py-3 text-2xl">Publish {'>>'}</p>
-					</SecondaryButton>
+					</TertiaryButton>
 				</div>
 			</div>
 			<BaseCenterModal modalVisible={loading}>

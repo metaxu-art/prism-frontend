@@ -2,16 +2,16 @@ import React from 'react';
 
 type Props = {
 	onClick?: () => void;
-	isActive?: boolean;
+	color?: 'black' | 'white';
 };
 
-const SecondaryButton: React.FC<Props> = ({ children, onClick, isActive = true }) => {
+const SecondaryButton: React.FC<Props> = ({ onClick, children, color = 'white' }) => {
+	let style = 'border-white text-white';
+	if (color === 'black') style = 'border-black text-black';
 	return (
 		<button
-			onClick={isActive ? onClick : undefined}
-			className={`bg-black w-full px-3 py-1 text-lg hover:opacity-60 transition ease-in text-white ${
-				isActive ? 'opacity-100' : 'opacity-50'
-			} ${isActive ? 'cursor-pointer' : 'cursor-default'}`}
+			onClick={onClick}
+			className={`w-full border px-3 py-3 text-lg hover:opacity-60 transition ease-in ${style} rounded-lg`}
 		>
 			{children}
 		</button>
