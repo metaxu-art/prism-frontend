@@ -1,7 +1,9 @@
 export interface Project {
 	id: number;
 	name: string;
-	chef: string;
-	amountMasterNft: number;
-	amountCollection: number;
+	owner: string;
+	traitTypes: string[];
+	collections: number;
+	description?: string;
+	externalUrl?: string;
 }

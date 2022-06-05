@@ -9,46 +9,52 @@ import { useRouter } from 'next/router';
 import AdminNavigationbar from '_molecules/AdminNavigationbar';
 import DropDownMenu from '_molecules/drop-down-menu/DropDownMenu';
 import { CollectionType, DropdownValue } from '_utils/models/dropdown-value';
-import { CollectionTypeEnum } from '_utils/enums/collection-type';
+import { AssetType } from '_utils/enums/asset-type';
+
+const collectionDropDownValues = [
+	new CollectionType(AssetType.Trait, 'Trait'),
+	new CollectionType(AssetType.Standard, 'Other'),
+	new CollectionType(AssetType.Master, 'Master'),
+];
 
 const CreateCollectionPage = () => {
 	const router = useRouter();
 	const { query } = router;
 	const { signer } = useContext(StoreContext);
-	const [name, setName] = useState('');
-	const [royalties, setRoyalties] = useState('');
-	const [maxSize, setMaxSize] = useState('');
+	const [name, setName] = useState('Collection name');
+	const [royalties, setRoyalties] = useState('100000000');
+	const [maxSize, setMaxSize] = useState('100');
 	const [collaborator, setCollaborator] = useState('');
 	const [selectedCollectionType, setSelectedCollectionType] = useState<DropdownValue>(
-		new CollectionType(0, 'Trait'),
+		collectionDropDownValues[0],
 	);
+	const [isLoading, setLoadingStatus] = useState(false);
 
-	// const createCollection = async () => {
-	// 	const traitTypeList = traitTypes.split(',');
-	// 	try {
-	// 		const tx = await signer?.projectContract.createProject(
-	// 			projectName,
-	// 			signer.address,
-	// 			traitTypeList,
-	// 		);
-	// 		await tx.wait();
-	// 	} catch (e) {
-	// 		console.error('creating project failed', e);
-	// 		return;
-	// 	}
-	// 	router.push('/admin/projects');
-	// };
+	const createCollection = async () => {
+		setLoadingStatus(true);
 
-	// const buttonIsActive = projectName.trim().length !== 0 && traitTypes.trim().length !== 0;
-
-	const enumList = Object.values(CollectionTypeEnum).map((e) => e);
-	const enumNames = enumList.map((e) => e).slice(0, enumList.length / 2);
+		let receipt;
+		try {
+			const tx = await signer?.projectContract.createCollection(
+				name,
+				maxSize,
+				query.projectId,
+				collaborator || signer.address,
+				selectedCollectionType.id,
+				royalties,
+			);
+			receipt = await tx.wait();
+		} catch (e) {
+			console.error('creating collection failed', e);
+		}
+		if (receipt) {
+			router.push(`/admin/projects/${query.projectId}`);
+		}
+		setLoadingStatus(false);
+	};
 
 	const btnIsActive =
-		name.trim().length !== 0 &&
-		royalties.trim().length !== 0 &&
-		maxSize.trim().length !== 0 &&
-		collaborator.trim().length !== 0;
+		name.trim().length !== 0 && royalties.trim().length !== 0 && maxSize.trim().length !== 0;
 
 	return (
 		<div className="w-full h-full overflow-auto">
@@ -65,7 +71,7 @@ const CreateCollectionPage = () => {
 				/>
 			</div>
 
-			<div className="w-full max-w-[1536px] mx-auto">
+			<div className="w-full max-w-[1536px] mx-auto px-10 2xl:px-0">
 				<div className="w-full max-w-[700px]">
 					<div className="pb-7">
 						<LabelPrimaryInput
@@ -102,6 +108,9 @@ const CreateCollectionPage = () => {
 							label="Collaborator"
 							placeholder="e.g. 0xaF33...C1f (optional)"
 						/>
+						<span className="text-sm font-bold text-red-600">
+							If you leave this input field empty by default you will be the collaborator
+						</span>
 					</div>
 
 					<div className="pb-7">
@@ -109,15 +118,12 @@ const CreateCollectionPage = () => {
 						<DropDownMenu
 							selectedDropDownValue={selectedCollectionType}
 							onDropdownValueSelected={(selectedValue) => setSelectedCollectionType(selectedValue)}
-							dropDownValues={enumNames.map(
-								(eName, index) => new CollectionType(index, eName.toString()),
-							)}
+							dropDownValues={collectionDropDownValues}
 						/>
 					</div>
 
 					<div className="max-w-[250px]">
-						<PrimaryButton isActive={btnIsActive} onClick={() => {}}>
-							{/* <PrimaryButton isActive={buttonIsActive} onClick={createCollection}> */}
+						<PrimaryButton isActive={!isLoading && btnIsActive} onClick={createCollection}>
 							<p className="py-2 uppercase font-bold">CREATE COLLECTION</p>
 						</PrimaryButton>
 					</div>

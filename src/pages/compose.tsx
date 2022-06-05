@@ -19,7 +19,7 @@ const ComposePage = () => {
 		if (checked) setSelectedTraits((oldTraits) => [...oldTraits, trait]);
 		else
 			setSelectedTraits((oldTraits) =>
-				oldTraits.filter((currentTrait) => currentTrait.tokenID !== trait.tokenID),
+				oldTraits.filter((currentTrait) => currentTrait.id !== trait.id),
 			);
 	};
 
@@ -29,7 +29,7 @@ const ComposePage = () => {
 
 	const onTraitArrowUpClicked = (tokenId: number) => {
 		const tempTraits = [...selectedTraits];
-		const token = tempTraits.find((trait) => tokenId === trait.tokenID);
+		const token = tempTraits.find((trait) => tokenId === trait.id);
 		if (token) {
 			const index = tempTraits.indexOf(token);
 			tempTraits.splice(index, 1);
@@ -40,7 +40,7 @@ const ComposePage = () => {
 
 	const onTraitArrowDownClicked = (tokenId: number) => {
 		const tempTraits = [...selectedTraits];
-		const token = tempTraits.find((trait) => tokenId === trait.tokenID);
+		const token = tempTraits.find((trait) => tokenId === trait.id);
 		if (token) {
 			const index = tempTraits.indexOf(token);
 			if (index !== 0) {

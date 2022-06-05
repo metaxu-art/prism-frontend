@@ -55,9 +55,8 @@ const EditNFTView: React.FC<Props> = ({
 		if (!isNftReadyToPublish) setNftReadyToPublishStatus(true);
 		else {
 			//Publish only to PFP
-			const selectedTraitIds = selectedTraits.map((token) => token.tokenID);
+			const selectedTraitIds = selectedTraits.map((token) => token.id);
 
-			setLoadingText('Composing and uploading your NFT to IPFS...');
 			setLoading(true);
 
 			let res;
@@ -102,7 +101,7 @@ const EditNFTView: React.FC<Props> = ({
 
 		if (res?.data) {
 			const filteredTokens = res.data.tokens.filter((token: Token) =>
-				selectedTokensList.includes(token.tokenID),
+				selectedTokensList.includes(token.id),
 			);
 			setLoading(false);
 			setAllTokens(res.data.tokens);
@@ -149,7 +148,7 @@ const EditNFTView: React.FC<Props> = ({
 					<Traits
 						traits={allTokens}
 						onTraitToggled={onTraitToggled}
-						selectedTraitIds={selectedTraits.map((trait) => trait.tokenID)}
+						selectedTraitIds={selectedTraits.map((trait) => trait.id)}
 						onTraitArrowDownClick={onTraitArrowDownClicked}
 						onTraitArrowUpClicked={onTraitArrowUpClicked}
 					/>
