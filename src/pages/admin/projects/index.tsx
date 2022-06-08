@@ -94,7 +94,19 @@ const ProjectsPage = () => {
 										</a>
 									</Link>
 								</div>
-								<FiEdit className="cursor-pointer text-2xl" />
+								<Link
+									passHref
+									href={{
+										pathname: `/admin/create-project`,
+										query: {
+											projectId: id,
+										},
+									}}
+								>
+									<a>
+										<FiEdit className="cursor-pointer text-2xl" />
+									</a>
+								</Link>
 							</div>
 						</div>
 					</div>
