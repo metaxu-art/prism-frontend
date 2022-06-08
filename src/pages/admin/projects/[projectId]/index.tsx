@@ -106,7 +106,7 @@ const ProjectDetailPage = () => {
 
 				{collections.map((collection, index) => {
 					const { name, amountTokens, id, assetType, paused } = collection;
-					console.log('paused', paused);
+
 					return (
 						<div
 							key={id}
