@@ -39,6 +39,7 @@ const CreateTokenPage = () => {
 		try {
 			const tx = await signer?.tokensContract.createToken(
 				name,
+				desc,
 				priceInWei,
 				query.collectionId,
 				maxSupply,
