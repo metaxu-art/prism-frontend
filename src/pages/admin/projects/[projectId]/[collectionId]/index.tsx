@@ -8,6 +8,7 @@ import PrimaryButton from '_atoms/buttons/Primary';
 import { StoreContext } from '_utils/context-api/store-context';
 import { Token } from '_utils/interfaces/token';
 import axios from 'axios';
+import BaseCenterModal from '_atoms/base-modals/CenterModal';
 
 // const dummyTokens: Token[] = [
 // 	{
@@ -37,6 +38,7 @@ const CollectionsPage = () => {
 	const [tokens, setTokens] = useState<Token[]>([]);
 	const [collectionName, setCollectionName] = useState<string>();
 	const [projectName, setProjectName] = useState<string>();
+	const [isLoading, setLoadingStatus] = useState(false);
 
 	const fetchProject = async () => {
 		let project;
@@ -70,21 +72,16 @@ const CollectionsPage = () => {
 		traitType,
 		assetType,
 	}: Token) => {
+		setLoadingStatus(true);
+
 		try {
-			const tx = await signer?.tokensContract.editTokens(
-				id,
-				name,
-				priceInWei,
-				collectionId,
-				maxSupply,
-				traitType,
-				assetType,
-				!paused,
-			);
+			const tx = await signer?.tokensContract.pauseToken(id);
 			await tx.wait();
 		} catch (e) {
+			setLoadingStatus(false);
 			return console.error(`Failed editing token with the id ${id} ${e}`);
 		}
+		setLoadingStatus(false);
 		setTokens((oldTokens) => {
 			return oldTokens.map((token) => {
 				if (token.id === id) {
@@ -235,6 +232,9 @@ const CollectionsPage = () => {
 					</a>
 				</Link>
 			</div>
+			<BaseCenterModal modalVisible={isLoading}>
+				<img src="/loading-gif.gif" />
+			</BaseCenterModal>
 		</div>
 	);
 };
