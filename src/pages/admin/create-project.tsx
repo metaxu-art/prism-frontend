@@ -1,4 +1,4 @@
-import React, { useContext, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import Head from 'next/head';
 import NavigationBar from '_organisms/NavigationBar';
 import PrimaryButton from '_atoms/buttons/Primary';
@@ -8,6 +8,8 @@ import { StoreContext } from '_utils/context-api/store-context';
 import { useRouter } from 'next/router';
 import AdminNavigationbar from '_molecules/AdminNavigationbar';
 import PrimaryTextArea from '_atoms/PrimaryTextArea';
+import { Project } from '_utils/interfaces/project';
+import axios from 'axios';
 
 const CreateProjectPage = () => {
 	const router = useRouter();
@@ -20,22 +22,56 @@ const CreateProjectPage = () => {
 	);
 	const [isLoading, setLoadingStatus] = useState(false);
 	const [projectUrl, setProjectUrl] = useState('https://cyberfrens.co/');
+	const [project, setProject] = useState<Project>();
 
 	const createProject = async () => {
-		setLoadingStatus(true);
-		const traitTypeList = traitTypes.split(',').map((a) => a.trim());
 		let receipt;
 		try {
-			const tx = await signer?.projectContract.createProject(name, signer.address, traitTypeList);
+			const tx = await signer?.projectContract.createProject(
+				name,
+				desc,
+				signer.address,
+				traitTypes.split(',').map((a) => a.trim()),
+			);
 			receipt = await tx.wait();
 		} catch (e) {
 			console.error('creating project failed', e);
 		}
-		if (receipt) {
-			router.push('/admin/projects');
+		return receipt;
+	};
+	const editProject = () => {};
+
+	const onCreateProjectClick = async () => {
+		setLoadingStatus(true);
+
+		let receipt;
+
+		if (project) {
+			receipt = await editProject();
+			console.log('edit project');
+			return;
+		} else {
+			receipt = await createProject();
 		}
+
+		if (receipt) router.push('/admin/projects');
+
 		setLoadingStatus(false);
 	};
+
+	const fetchProject = async () => {
+		let project;
+		try {
+			project = await axios.get(`/project/${router.query.projectId}`);
+		} catch (e) {
+			console.error(`Failed to fetch a project by id ${router.query.projectId}. ${e}`);
+		}
+		if (project?.data) setProject(project.data);
+	};
+
+	useEffect(() => {
+		if (router.query.projectId) fetchProject();
+	}, []);
 
 	const btnIsActive =
 		name.trim().length !== 0 &&
@@ -105,8 +141,10 @@ const CreateProjectPage = () => {
 					</div>
 
 					<div className="max-w-[250px]">
-						<PrimaryButton isActive={!isLoading && btnIsActive} onClick={createProject}>
-							<p className="py-2 uppercase font-bold">Create Project</p>
+						<PrimaryButton isActive={!isLoading && btnIsActive} onClick={onCreateProjectClick}>
+							<p className="py-2 uppercase font-bold">
+								{project ? 'Edit Project' : 'Create Project'}
+							</p>
 						</PrimaryButton>
 					</div>
 				</div>
