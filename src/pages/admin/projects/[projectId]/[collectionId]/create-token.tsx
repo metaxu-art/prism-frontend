@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useContext, useEffect, useRef, useState } from 'react';
 import Head from 'next/head';
 import NavigationBar from '_organisms/NavigationBar';
 import PrimaryButton from '_atoms/buttons/Primary';
@@ -14,6 +14,9 @@ import { Collection } from '_utils/interfaces/collection';
 import { uploadToPinata } from '_utils/services/pinata';
 import axios from 'axios';
 import PrimaryTextArea from '_atoms/PrimaryTextArea';
+import InteractiveAttributesInputs, {
+	AttributeInputValue,
+} from '_organisms/interactive-attributes-inputs';
 
 const CreateTokenPage = () => {
 	const router = useRouter();
@@ -33,14 +36,18 @@ const CreateTokenPage = () => {
 	);
 	const [isLoading, setLoadingStatus] = useState(false);
 	const [error, setError] = useState('');
+	const attributeValues = useRef<AttributeInputValue[]>([]);
 
-	const createTokenInContract = async () => {
+	const createTokenInContract = async (ipfsImageHash: string) => {
 		let receipt;
 		try {
 			const tx = await signer?.tokensContract.createToken(
 				name,
 				desc,
 				priceInWei,
+				ipfsImageHash,
+				attributeValues.current.map((attributeValue) => attributeValue.name),
+				attributeValues.current.map((attributeValue) => attributeValue.value),
 				query.collectionId,
 				maxSupply,
 				selectedTraitType?.name, // trait type
@@ -61,7 +68,7 @@ const CreateTokenPage = () => {
 			const objectUrl = _URL.createObjectURL(imageFile);
 			img.onload = function () {
 				const thisAny = this as any;
-				console.log(thisAny.width, thisAny.height);
+				// console.log(thisAny.width, thisAny.height);
 				resolve([thisAny.width, thisAny.height]);
 				_URL.revokeObjectURL(objectUrl);
 			};
@@ -72,45 +79,17 @@ const CreateTokenPage = () => {
 
 	const onCreateTokenButtonClicked = async () => {
 		setLoadingStatus(true);
-		console.log('uploading image to ipfs...');
+		// console.log('uploading image to ipfs...');
 		const pinataRes = await uploadToPinata(imageFile!);
+		// console.log('pinataRes', pinataRes.IpfsHash);
 		if (!pinataRes) return setError('Failed to upload an image to pinata');
 
-		console.log('creating token in contract...');
-		const receipt = await createTokenInContract();
+		// console.log('creating token in contract...');
+		const receipt = await createTokenInContract(pinataRes.IpfsHash);
 		if (!receipt) return setError('Failed to create a token in contract');
 
 		router.push(`/admin/projects/${query.projectId}/${query.collectionId}`);
 	};
-
-	// const fetchCollection = async () => {
-	// 	let collection;
-	// 	try {
-	// 		collection = await signer?.projectContract.collections(query.collectionId);
-	// 		console.log('collection', collection);s
-	// 		setCollection({
-	// 			assetType: collection.assetType,
-	// 			name: collection.name,
-	// 		});
-	// 	} catch (e) {
-	// 		console.error(`Failed to fetch a collection by id ${query.collectionId}`);
-	// 	}
-	// };
-
-	// const fetchTraitTypes = async () => {
-	// 	let project;
-	// 	try {
-	// 		project = (await signer?.projectContract.viewProjectTraitTypes(query.projectId)) as string[];
-	// 		console.log('traitTypes', project);
-	// 	} catch (e) {
-	// 		console.log(
-	// 			`Failed to fetch project trait types for the project with the id ${query.projectId}`,
-	// 		);
-	// 	}
-	// 	if (project) {
-	// 		setAllTraitTypes(project.map((traitType, id) => new TraitType(id, traitType)));
-	// 	}
-	// };
 
 	const fetchCollection = async () => {
 		let res;
@@ -130,9 +109,9 @@ const CreateTokenPage = () => {
 		let res;
 		try {
 			res = await axios.get(`/project/${query.projectId}`);
-			console.log(res.data);
+			// console.log(res.data);
 		} catch (e) {
-			console.log(`Failed to fetch project by the id ${query.projectId}. ${e}`);
+			console.error(`Failed to fetch project by the id ${query.projectId}. ${e}`);
 		}
 		if (res?.data)
 			setAllTraitTypes(
@@ -143,11 +122,11 @@ const CreateTokenPage = () => {
 	const onImageFilePicked = async (e: React.ChangeEvent<HTMLInputElement>) => {
 		if (e.target.files?.length) {
 			const file = e.target.files[0];
-			//check the fie size of the image
+
 			let imgDimens: number[]; // [width, height]
 			try {
 				imgDimens = (await getImageFileSize(file)) as number[];
-				console.log('file dimens', imgDimens);
+				// console.log('file dimens', imgDimens);
 			} catch (e) {
 				console.error(`failed at checking the image dimensions. ${e}`);
 				return setError(
@@ -161,12 +140,10 @@ const CreateTokenPage = () => {
 				setError('');
 				setImageFile(file);
 			}
-			// if file size no equal to  1200/1200 throw an error
 		}
 	};
 
 	useEffect(() => {
-		// get all the types based on the collectionId
 		fetchCollection();
 		fetchTraitTypes();
 	}, []);
@@ -239,6 +216,14 @@ const CreateTokenPage = () => {
 							dropDownValues={allTraitTypes}
 						/>
 					</div>
+
+					<div className="pb-7">
+						<InteractiveAttributesInputs
+							handleAttributeValuesChanged={(attr) => {
+								attributeValues.current = attr;
+							}}
+						/>
+					</div>
 					<div className="pb-7">
 						<p className="font-bold text-xl pb-1">Project Description</p>
 						<PrimaryTextArea
@@ -255,7 +240,6 @@ const CreateTokenPage = () => {
 							onClick={onCreateTokenButtonClicked}
 						>
 							<p className="py-2 uppercase font-bold">CREATE TOKEN</p>
-							{/* <PrimaryButton isActive={buttonIsActive} onClick={createCollection}> */}
 						</PrimaryButton>
 					</div>
 				</div>
