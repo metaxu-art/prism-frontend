@@ -26,13 +26,11 @@ const ProjectDetailPage = () => {
 		let collections;
 		try {
 			collections = await axios.get(`/collections/${query.projectId}`);
-			console.log('collections', collections);
+			// console.log('collections', collections);
 		} catch (e) {
 			console.error(`Failed to fetch collections ${e}`);
 		}
-		if (collections?.data) {
-			setCollections(collections.data);
-		}
+		if (collections?.data) setCollections(collections.data);
 	};
 
 	const fetchProject = async () => {
@@ -88,7 +86,7 @@ const ProjectDetailPage = () => {
 			<div className="py-5 px-10 2xl:px-0">
 				<div className="grid grid-cols-6 gap-5 max-w-[1536px] mx-auto">
 					<span className="overflow-hidden font-semibold text-2xl"># name</span>
-					<span className="overflow-hidden font-semibold text-2xl"># tokens</span>
+					<span className="overflow-hidden font-semibold text-2xl"># max supply</span>
 					<span className="overflow-hidden font-semibold text-2xl"># type</span>
 					<span className="overflow-hidden font-semibold text-2xl"># collectionID</span>
 					<span className="overflow-hidden font-semibold text-2xl"># status</span>
@@ -105,7 +103,7 @@ const ProjectDetailPage = () => {
 				)}
 
 				{collections.map((collection, index) => {
-					const { name, amountTokens, id, assetType, paused } = collection;
+					const { name, maxInvocation, id, assetType, paused } = collection;
 
 					return (
 						<div
@@ -119,7 +117,7 @@ const ProjectDetailPage = () => {
 									{name}
 								</span>
 								<span className="overflow-hidden whitespace-nowrap text-ellipsis font-semibold text-2xl">
-									{amountTokens}
+									{maxInvocation}
 								</span>
 								<span className="overflow-hidden whitespace-nowrap text-ellipsis font-semibold text-2xl">
 									{assetType === AssetType.Master && 'Master'}
