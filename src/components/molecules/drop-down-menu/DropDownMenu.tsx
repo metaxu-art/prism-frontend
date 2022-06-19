@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { FiChevronDown } from 'react-icons/fi';
+import { FiChevronDown, FiChevronUp } from 'react-icons/fi';
 import { DropdownValue } from '_utils/models/dropdown-value';
 import DropDownMenuItem from './DropDownMenuItem';
 
@@ -27,13 +27,13 @@ const DropDownMenu: React.FC<Props> = ({
 				className="bg-white border-2 border-black px-10 py-4 font-semibold text-lg flex items-center justify-between cursor-pointer rounded-lg"
 			>
 				<span
-					className={`whitespace-nowrap font-bold uppercase ${!hasSelectedValue && 'bg-grey-400'}`}
+					className={`whitespace-nowrap font-bold uppercase ${!hasSelectedValue && 'opacity-50'}`}
 				>
 					{hasSelectedValue && selectedDropDownValue?.name}
-					{dropDownValues.length !== 0 && !hasSelectedValue && dropDownValues[0].name}
-					{dropDownValues.length === 0 && !hasSelectedValue && defaultDropdownText}
+					{!hasSelectedValue && defaultDropdownText}
 				</span>
-				<FiChevronDown className="text-3xl" />
+				{!isOpen && <FiChevronDown className="text-3xl" />}
+				{isOpen && <FiChevronUp className="text-3xl" />}
 			</div>
 			{isOpen && (
 				<div className="absolute z-10 w-full overflow-y-auto max-h-[200px] border-2 rounded-md border-black">

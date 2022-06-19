@@ -8,8 +8,8 @@ import axios from 'axios';
 
 axios.defaults.baseURL =
 	process.env.NODEENV === 'development'
-		? 'http://localhost:5000'
-		: 'https://mtx-labs-prism.herokuapp.com';
+		? 'http://localhost:5000/api/v2'
+		: 'https://mtx-labs-prism.herokuapp.com/api/v2';
 
 function MyApp({ Component, pageProps }: AppProps) {
 	const [signer, setSigner] = useState<Signer | null>(null);

@@ -7,58 +7,33 @@ import PrimaryButton from '_atoms/buttons/Primary';
 import { StoreContext } from '_utils/context-api/store-context';
 import { Project } from '_utils/interfaces/project';
 import AdminNavigationbar from '_molecules/AdminNavigationbar';
+import axios from 'axios';
 
-const dummyProjects: Project[] = [
-	{
-		id: 0,
-		name: 'Project #1',
-		chef: '0xaF3317cB28F219e52C1fd82d78FA981D1Bf3939D',
-		amountMasterNft: 0,
-		amountCollection: 0,
-	},
-	{
-		id: 1,
-		name: 'Project #1',
-		chef: '0xaF3317cB28F219e52C1fd82d78FA981D1Bf3939D',
-		amountMasterNft: 0,
-		amountCollection: 0,
-	},
-];
 const ProjectsPage = () => {
 	const { signer } = useContext(StoreContext);
-	const [projects, setProjects] = useState<Partial<Project>[]>([...dummyProjects]);
+	const [projects, setProjects] = useState<Partial<Project>[]>([]);
 
 	const fetchProjects = async () => {
+		let projects;
 		try {
-			const projects = await signer?.projectContract.chefToProjects(signer.address);
-			console.log('projects', projects);
-			// for (let i = 0; i < projects.length; ++i) {
-			// 	const project = projects[i];
-			// 	const collections = await signer?.projectContract.collectionsOfProject(
-			// 		project.id.toString(),
-			// 	);
-			// 	console.log('collections', collections);
-			// }
-			// setProjects(projects)
-			const collections = await signer?.tokensContract.collectionsOfProject('0');
-			console.log('collections', collections);
-			const stateProject: Project[] = projects.map((project: any) => {
-				return {
-					id: project.id,
-					name: project.name,
-					chef: project.chef,
-					amountMasterNft: 0,
-					amountCollection: 0,
-				};
-			});
-			setProjects(stateProject);
+			projects = await axios.get('/projects');
+			// console.log('projects', projects.data);
 		} catch (e) {
-			console.error('failed fetching project from prism project contract', e);
+			console.error('failed fetching projects from prism project contract', e);
 		}
+		if (projects?.data) setProjects([...projects.data]);
 	};
 
+	const toBase64 = (file: File) =>
+		new Promise((resolve, reject) => {
+			const reader = new FileReader();
+			reader.readAsDataURL(file);
+			reader.onload = () => resolve(reader.result);
+			reader.onerror = (error) => reject(error);
+		});
+
 	useEffect(() => {
-		// fetchProjects();
+		fetchProjects();
 	}, []);
 
 	return (
@@ -66,19 +41,18 @@ const ProjectsPage = () => {
 			<Head>
 				<title>Prism | Admin Projects</title>
 			</Head>
-			<NavigationBar />
-			<AdminNavigationbar backLinkText="Home" title="Projects" />
 
-			<div className="py-5">
+			<NavigationBar />
+
+			<AdminNavigationbar backLinkText="Home" title="Projects" backLinkHref="/" />
+
+			<div className="py-5 px-10 2xl:px-0">
 				<div className="grid grid-cols-5 gap-5 max-w-[1536px] mx-auto">
 					<span className="overflow-hiden whitespace-nowrap text-ellipsis font-semibold text-2xl">
 						# name
 					</span>
 					<span className="overflow-hidden whitespace-nowrap text-ellipsis font-semibold text-2xl">
 						# creator
-					</span>
-					<span className="overflow-hidden whitespace-nowrap text-ellipsis font-semibold text-2xl">
-						# master nfts
 					</span>
 					<span className="overflow-hidden whitespace-nowrap text-ellipsis font-semibold text-2xl">
 						# collections
@@ -88,30 +62,27 @@ const ProjectsPage = () => {
 
 			<div className="flex-1 overflow-auto pb-5">
 				{projects.length === 0 && (
-					<div className="flex justify-center items-center h-full">
+					<div className="flex justify-center items-center h-full px-10 2xl:px-0">
 						<span className="uppercase text-3xl font-bold">YOU DON’T HAVE ANY PROJECTS YET.</span>
 					</div>
 				)}
 
-				{projects.map(({ amountCollection, chef, id, amountMasterNft, name }, index) => (
+				{projects.map(({ id, name, collections, owner }, index) => (
 					<div
 						key={id}
 						className={`border-black ${
 							projects.length - 1 === index && 'border-b-2'
-						} border-t-2 py-2`}
+						} border-t-2 py-2 px-10 2xl:px-0`}
 					>
 						<div className="grid grid-cols-5 gap-5 max-w-[1536px] mx-auto ">
 							<span className="overflow-hidden whitespace-nowrap text-ellipsis font-semibold text-2xl">
 								{name}
 							</span>
 							<span className="overflow-hidden whitespace-nowrap text-ellipsis font-semibold text-2xl">
-								{chef}
+								{owner}
 							</span>
 							<span className="overflow-hidden whitespace-nowrap text-ellipsis font-semibold text-2xl">
-								{amountMasterNft}
-							</span>
-							<span className="overflow-hidden whitespace-nowrap text-ellipsis font-semibold text-2xl">
-								{amountCollection}
+								{collections?.length}
 							</span>
 							<div className="flex items-center justify-between">
 								<div className="max-w-[400px]">
@@ -123,7 +94,19 @@ const ProjectsPage = () => {
 										</a>
 									</Link>
 								</div>
-								<FiEdit className="cursor-pointer text-2xl" />
+								<Link
+									passHref
+									href={{
+										pathname: `/admin/create-project`,
+										query: {
+											projectId: id,
+										},
+									}}
+								>
+									<a>
+										<FiEdit className="cursor-pointer text-2xl" />
+									</a>
+								</Link>
 							</div>
 						</div>
 					</div>

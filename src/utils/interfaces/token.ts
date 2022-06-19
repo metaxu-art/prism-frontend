@@ -1,24 +1,35 @@
-export interface Token {
-	attributes: string[];
-	collection_name: string;
-	description: string;
-	external_url: string;
-	image: string;
-	name: string;
-	platform: string;
-	tokenID: number;
-	website: string;
-}
-//     string name;
-//     uint256 maxSupply;
-//     uint256 tokenPriceInWei;
-//     uint256 projectId;
-//     uint256 collectionId;
-//     uint256 masterTokenId;
-//     string tokenURI;
-//     bool paused;
-//     bool locked;
+import { AssetType } from '_utils/enums/asset-type';
 
-export interface Master extends Token {
-	traitIds: string[];
+export interface Token {
+	id: number;
+	name: string;
+	description: string;
+	assetType: AssetType;
+	collectionId: number;
+	locked: boolean;
+	maxSupply: number;
+	amountMinted: number;
+	paused: boolean;
+	priceInWei: string;
+	projectId: number;
+	traitType: string;
+	image: string;
+	creator: string;
 }
+
+// export interface Token {
+// 	id: number;
+// 	assetType: AssetType;
+// 	collectionId: number;
+// 	locked: boolean;
+// 	maxSupply: number;
+// 	amountMinted: number;
+// 	name: string;
+// 	paused: boolean;
+// 	priceInWei: string;
+// 	projectId: number;
+// 	traitType: string;
+// 	image: string;
+// 	description: string;
+// 	creator: string;
+// }

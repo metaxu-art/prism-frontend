@@ -15,13 +15,19 @@ export abstract class DropdownValue {
 
 export class TraitCollection extends DropdownValue {
 	constructor() {
-		super(AssetType.TRAIT, 'Trait Collection');
+		super(AssetType.Trait, 'Trait Collection');
 	}
 }
 
 export class MasterCollection extends DropdownValue {
 	constructor() {
-		super(AssetType.MASTER, 'Master Collection');
+		super(AssetType.Master, 'Master Collection');
+	}
+}
+
+export class OtherCollection extends DropdownValue {
+	constructor() {
+		super(AssetType.Standard, 'Master Collection');
 	}
 }
 

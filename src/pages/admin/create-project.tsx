@@ -1,4 +1,4 @@
-import React, { useContext, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import Head from 'next/head';
 import NavigationBar from '_organisms/NavigationBar';
 import PrimaryButton from '_atoms/buttons/Primary';
@@ -8,32 +8,76 @@ import { StoreContext } from '_utils/context-api/store-context';
 import { useRouter } from 'next/router';
 import AdminNavigationbar from '_molecules/AdminNavigationbar';
 import PrimaryTextArea from '_atoms/PrimaryTextArea';
+import { Project } from '_utils/interfaces/project';
+import axios from 'axios';
 
 const CreateProjectPage = () => {
 	const router = useRouter();
 	const { signer } = useContext(StoreContext);
-	const [name, setName] = useState('');
-	const [owner, setOwner] = useState('');
-	const [traitTypes, setTraitTypes] = useState('');
-	const [desc, setDesc] = useState('');
+	const [name, setName] = useState('Project X');
+
+	const [traitTypes, setTraitTypes] = useState('armour, skin, body, weapon');
+	const [desc, setDesc] = useState(
+		'CyberFrens is a multiverse Project exploring the intersection and capibilities of NFTs accross different virtual worlds.',
+	);
+	const [isLoading, setLoadingStatus] = useState(false);
+	const [projectUrl, setProjectUrl] = useState('https://cyberfrens.co/');
+	const [project, setProject] = useState<Project>();
 
 	const createProject = async () => {
-		const traitTypeList = traitTypes.split(',');
+		let receipt;
 		try {
-			const tx = await signer?.projectContract.createProject(name, signer.address, traitTypeList);
-			await tx.wait();
+			const tx = await signer?.projectContract.createProject(
+				name,
+				desc,
+				signer.address,
+				traitTypes.split(',').map((a) => a.trim()),
+			);
+			receipt = await tx.wait();
 		} catch (e) {
 			console.error('creating project failed', e);
-			return;
 		}
-		router.push('/admin/projects');
+		return receipt;
 	};
+	const editProject = () => {};
+
+	const onCreateProjectClick = async () => {
+		setLoadingStatus(true);
+
+		let receipt;
+
+		if (project) {
+			receipt = await editProject();
+			// console.log('edit project');
+			return;
+		} else {
+			receipt = await createProject();
+		}
+
+		if (receipt) router.push('/admin/projects');
+
+		setLoadingStatus(false);
+	};
+
+	const fetchProject = async () => {
+		let project;
+		try {
+			project = await axios.get(`/project/${router.query.projectId}`);
+		} catch (e) {
+			console.error(`Failed to fetch a project by id ${router.query.projectId}. ${e}`);
+		}
+		if (project?.data) setProject(project.data);
+	};
+
+	useEffect(() => {
+		if (router.query.projectId) fetchProject();
+	}, []);
 
 	const btnIsActive =
 		name.trim().length !== 0 &&
-		owner.trim().length !== 0 &&
 		traitTypes.trim().length !== 0 &&
-		desc.trim().length !== 0;
+		desc.trim().length !== 0 &&
+		projectUrl.trim().length !== 0;
 
 	return (
 		<div className="w-full h-full overflow-auto">
@@ -49,7 +93,7 @@ const CreateProjectPage = () => {
 				/>
 			</div>
 
-			<div className="w-full max-w-[1536px] mx-auto">
+			<div className="w-full max-w-[1536px] mx-auto px-10 2xl:px-0">
 				<div className="w-full max-w-[700px]">
 					<div className="pb-7">
 						<LabelPrimaryInput
@@ -59,14 +103,7 @@ const CreateProjectPage = () => {
 							placeholder="E.g. Project X"
 						/>
 					</div>
-					<div className="pb-7">
-						<LabelPrimaryInput
-							value={owner}
-							onChange={(e) => setOwner(e.target.value)}
-							label="Project Owner/Chef"
-							placeholder="E.g. Project X"
-						/>
-					</div>
+
 					<div className="pb-7">
 						<LabelPrimaryInput
 							value={traitTypes}
@@ -77,19 +114,37 @@ const CreateProjectPage = () => {
 					</div>
 
 					<div className="pb-7">
+						<LabelPrimaryInput
+							value={signer?.address}
+							onChange={(e) => {}}
+							label="Project Owner/Chef"
+						/>
+					</div>
+
+					<div className="pb-7">
+						<LabelPrimaryInput
+							value={projectUrl}
+							onChange={(e) => setProjectUrl(e.target.value)}
+							label="Project Url"
+							placeholder="e.g. https://cyberfrens.co/"
+						/>
+					</div>
+
+					<div className="pb-7">
 						<p className="font-bold text-xl pb-1">Project Description</p>
 						<PrimaryTextArea
 							onChange={(e) => setDesc(e.target.value)}
 							placeholder="CyberFrens is a multiverse Project exploring the intersection and
 							capibilities of NFTs accross different virtual worlds."
-						>
-							{desc}
-						</PrimaryTextArea>
+							value={desc}
+						/>
 					</div>
 
 					<div className="max-w-[250px]">
-						<PrimaryButton isActive={btnIsActive} onClick={createProject}>
-							<p className="py-2 uppercase font-bold">Create Project</p>
+						<PrimaryButton isActive={!isLoading && btnIsActive} onClick={onCreateProjectClick}>
+							<p className="py-2 uppercase font-bold">
+								{project ? 'Edit Project' : 'Create Project'}
+							</p>
 						</PrimaryButton>
 					</div>
 				</div>

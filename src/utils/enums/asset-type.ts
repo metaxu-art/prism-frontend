@@ -1,5 +1,5 @@
 export enum AssetType {
-	STANDARD,
-	TRAIT,
-	MASTER,
+	Standard,
+	Trait,
+	Master,
 }

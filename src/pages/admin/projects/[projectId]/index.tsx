@@ -5,75 +5,71 @@ import { StoreContext } from '_utils/context-api/store-context';
 import NavigationBar from '_organisms/NavigationBar';
 import Link from 'next/link';
 import PrimaryButton from '_atoms/buttons/Primary';
-import { DropdownValue, TraitCollection } from '_utils/models/dropdown-value';
-import BaseCenterModal from '_atoms/base-modals/CenterModal';
 import AdminNavigationbar from '_molecules/AdminNavigationbar';
-import { CollectionTypeEnum } from '_utils/enums/collection-type';
 import { FiEdit } from 'react-icons/fi';
-import { Status } from '_utils/enums/status';
-
-interface CollectionInterface {
-	name: string;
-	amountTokens: number;
-	type: CollectionTypeEnum;
-	manager: string;
-	id: string;
-	status: Status;
-}
-
-const dummyCollections: CollectionInterface[] = [
-	{
-		name: 'CyberFrens Core',
-		amountTokens: 400,
-		id: '0',
-		manager: '0x4925dAe3cA2d4533E30b6234637c76B07198b017',
-		status: Status.Paused,
-		type: CollectionTypeEnum.Master,
-	},
-	{
-		name: 'Collection 2',
-		id: '1',
-		amountTokens: 10,
-		manager: '0x4925dAe3cA2d4533E30b6234637c76B07198b017',
-		status: Status.Unpaused,
-		type: CollectionTypeEnum.Trait,
-	},
-];
+import { AssetType } from '_utils/enums/asset-type';
+import { Collection } from '_utils/interfaces/collection';
+import { Project } from '_utils/interfaces/project';
+import BaseCenterModal from '_atoms/base-modals/CenterModal';
+import axios from 'axios';
 
 const ProjectDetailPage = () => {
 	const { signer } = useContext(StoreContext);
 	const router = useRouter();
 	const { query } = router;
-	const [isLoading, setLoading] = useState(true);
-	const [collections, setCollections] = useState<CollectionInterface[]>([...dummyCollections]);
-	const [selectedCollection, setSelectedCollection] = useState<DropdownValue>(
-		new TraitCollection(),
-	);
+	const [isLoading, setLoadingStatus] = useState(false);
 
-	useEffect(() => {
-		if (!signer) router.push('/');
-		else {
-			setLoading(false);
-			// get collections based on query.projectId
-			// filter token
+	const [collections, setCollections] = useState<Collection[]>([]);
+	const [project, setProject] = useState<Project>();
+
+	const fetchCollections = async () => {
+		let collections;
+		try {
+			collections = await axios.get(`/collections/${query.projectId}`);
+			// console.log('collections', collections);
+		} catch (e) {
+			console.error(`Failed to fetch collections ${e}`);
 		}
-	}, []);
+		if (collections?.data) setCollections(collections.data);
+	};
+
+	const fetchProject = async () => {
+		let project;
+		try {
+			project = await axios.get(`/project/${query.projectId}`);
+		} catch (e) {
+			console.error(`Failed to fetch a project by id ${query.projectId}. ${e}`);
+		}
+		if (project?.data) setProject(project.data);
+	};
+
+	const onStatusButtonClick = async (collection: Collection) => {
+		const { id, name, maxInvocation, manager, royalties, assetType, paused } = collection;
+		setLoadingStatus(true);
+		// console.log(id, name, maxInvocation, manager, royalties, assetType, paused);
+		try {
+			const tx = await signer?.projectContract.pauseCollection(id);
+			await tx.wait();
+		} catch (e) {
+			setLoadingStatus(false);
+			return console.error(`Changing the pause state on buton failed ${e}`);
+		}
+		setLoadingStatus(false);
+		setCollections((oldCollections) =>
+			oldCollections.map((collection) => {
+				const copyCollection = { ...collection };
+				if (copyCollection.id === id) {
+					copyCollection.paused = !copyCollection.paused;
+				}
+				return copyCollection;
+			}),
+		);
+	};
 
 	useEffect(() => {
-		console.log('filter collection by', selectedCollection.name);
-	}, [selectedCollection]);
-
-	const onStatusButtonClick = (collectionId: string, status: Status) => {
-		setCollections((oldCollections) => {
-			return oldCollections.map((collection) => {
-				if (collection.id === collectionId) {
-					collection.status = status === Status.Paused ? Status.Unpaused : Status.Paused;
-				}
-				return collection;
-			});
-		});
-	};
-	const onUnpauseButtonClick = (collectionId: string) => {};
+		fetchCollections();
+		fetchProject();
+	}, []);
 
 	return (
 		<div className="w-full h-full flex flex-col">
@@ -84,15 +80,14 @@ const ProjectDetailPage = () => {
 			<AdminNavigationbar
 				backLinkText="Projects"
 				backLinkHref="/admin/projects"
-				title={`Project #${query.projectId}`}
+				title={project?.name}
 			/>
 
-			<div className="py-5">
+			<div className="py-5 px-10 2xl:px-0">
 				<div className="grid grid-cols-6 gap-5 max-w-[1536px] mx-auto">
 					<span className="overflow-hidden font-semibold text-2xl"># name</span>
-					<span className="overflow-hidden font-semibold text-2xl"># amount tokens</span>
+					<span className="overflow-hidden font-semibold text-2xl"># max supply</span>
 					<span className="overflow-hidden font-semibold text-2xl"># type</span>
-					<span className="overflow-hidden font-semibold text-2xl"># manager</span>
 					<span className="overflow-hidden font-semibold text-2xl"># collectionID</span>
 					<span className="overflow-hidden font-semibold text-2xl"># status</span>
 				</div>
@@ -107,52 +102,53 @@ const ProjectDetailPage = () => {
 					</div>
 				)}
 
-				{collections.map(({ name, amountTokens, id, manager, status, type }, index) => (
-					<div
-						key={id}
-						className={`border-black ${
-							collections.length - 1 === index && 'border-b-2'
-						} border-t-2 py-2`}
-					>
-						<div className="grid grid-cols-6 gap-5 max-w-[1536px] mx-auto ">
-							<span className="overflow-hidden whitespace-nowrap text-ellipsis font-semibold text-2xl">
-								{name}
-							</span>
-							<span className="overflow-hidden whitespace-nowrap text-ellipsis font-semibold text-2xl">
-								{amountTokens}
-							</span>
-							<span className="overflow-hidden whitespace-nowrap text-ellipsis font-semibold text-2xl">
-								{type === CollectionTypeEnum.Master && 'Master'}
-								{type === CollectionTypeEnum.Trait && 'Trait'}
-								{type === CollectionTypeEnum.Other && 'Other'}
-							</span>
-							<span className="overflow-hidden whitespace-nowrap text-ellipsis font-semibold text-2xl">
-								{manager}
-							</span>
-							<span className="overflow-hidden whitespace-nowrap text-ellipsis font-semibold text-2xl">
-								#{id}
-							</span>
-							<div className="flex items-center justify-between">
-								<div className="max-w-[400px]">
-									<button
-										onClick={() => onStatusButtonClick(id, status)}
-										className={`w-full ${
-											status === Status.Paused ? 'bg-[#FF7C7C]' : 'bg-[#CDFFBC]'
-										} text-black font-semibold px-4 border border-black rounded-md py-1`}
-									>
-										{status === Status.Paused && 'Paused'}
-										{status === Status.Unpaused && 'Unpaused'}
-									</button>
+				{collections.map((collection, index) => {
+					const { name, maxInvocation, id, assetType, paused } = collection;
+
+					return (
+						<div
+							key={id}
+							className={`border-black ${
+								collections.length - 1 === index && 'border-b-2'
+							} border-t-2 py-2`}
+						>
+							<div className="grid grid-cols-6 gap-5 max-w-[1536px] mx-auto px-10 2xl:px-0">
+								<span className="overflow-hidden whitespace-nowrap text-ellipsis font-semibold text-2xl">
+									{name}
+								</span>
+								<span className="overflow-hidden whitespace-nowrap text-ellipsis font-semibold text-2xl">
+									{maxInvocation}
+								</span>
+								<span className="overflow-hidden whitespace-nowrap text-ellipsis font-semibold text-2xl">
+									{assetType === AssetType.Master && 'Master'}
+									{assetType === AssetType.Trait && 'Trait'}
+									{assetType === AssetType.Standard && 'Other'}
+								</span>
+								<span className="overflow-hidden whitespace-nowrap text-ellipsis font-semibold text-2xl">
+									{id}
+								</span>
+								<div className="flex items-center justify-between">
+									<div className="max-w-[400px]">
+										<button
+											onClick={() => onStatusButtonClick(collection)}
+											className={`w-full ${
+												paused ? 'bg-[#FF7C7C]' : 'bg-[#CDFFBC]'
+											} text-black font-semibold px-4 border border-black rounded-md py-1`}
+										>
+											{paused && 'Paused'}
+											{!paused && 'Unpaused'}
+										</button>
+									</div>
+									<Link href={`/admin/projects/${query.projectId}/${id}`}>
+										<a>
+											<FiEdit className="cursor-pointer text-2xl" />
+										</a>
+									</Link>
 								</div>
-								<Link href={`/admin/projects/${query.projectId}/${id}`}>
-									<a>
-										<FiEdit className="cursor-pointer text-2xl" />
-									</a>
-								</Link>
 							</div>
 						</div>
-					</div>
-				))}
+					);
+				})}
 			</div>
 
 			<div className="w-full max-w-[300px] mx-auto py-5">
@@ -164,20 +160,8 @@ const ProjectDetailPage = () => {
 					</a>
 				</Link>
 			</div>
-
 			<BaseCenterModal modalVisible={isLoading}>
-				<div className="flex flex-col justify-start items-start">
-					<div className="w-full pb-2">
-						<img
-							src="/loading-gif.gif"
-							width={120}
-							height={120}
-							className="mx-auto"
-							alt="Loading svg"
-						/>
-					</div>
-					<div className="text-white text-2xl">Waiting for setup...</div>
-				</div>
+				<img src="/loading-gif.gif" />
 			</BaseCenterModal>
 		</div>
 	);

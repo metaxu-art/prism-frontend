@@ -16,8 +16,9 @@ export const useWeb3Modal = () => {
 
 		if (provider) {
 			const network = await provider.getNetwork();
+			// console.log(network);
 
-			// if (network.name !== 'matic') {
+			// 'matic' === polygon; 'maticmum' === mumbai testnet
 			if (false) {
 				setUserAuthenticatingStatus(AuthenticationStatus.WrongNetwork);
 			} else {

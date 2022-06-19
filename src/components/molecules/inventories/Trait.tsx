@@ -22,11 +22,7 @@ const Trait: React.FC<Props> = ({
 		<div className="flex items-center justify-between pb-5">
 			<div className="flex-1 flex items-center">
 				<div className="relative w-20 h-20 border border-black">
-					<Image
-						src={trait.image}
-						layout="fill"
-						alt={`token ${trait.name}: ${trait.attributes.join(',')}`}
-					/>
+					<Image src={trait.image} layout="fill" alt={`token ${trait.name}}`} />
 				</div>
 				<div className="pl-5">
 					<span className="text-xl font-bold">{trait.name}</span>

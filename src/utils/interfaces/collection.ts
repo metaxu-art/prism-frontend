@@ -1,10 +1,17 @@
+import { AssetType } from '_utils/enums/asset-type';
+
 export interface Collection {
+	id: number;
 	name: string;
-	maxInvocations: number;
 	projectId: number;
-	invocations?: number;
-	paused?: boolean;
-	locked?: boolean;
+	assetType: AssetType;
+	manager: string;
+	royalties: number;
+	maxInvocation: number;
+	paused: boolean;
+	locked: boolean;
+	maxSupply: number;
+	amountMinted: number;
 }
 
 // struct Collection {
@@ -19,3 +26,14 @@ export interface Collection {
 //     bool paused;
 //     bool locked;
 //   }
+
+// assetType: 0
+// id: BigNumber {_hex: '0x01', _isBigNumber: true}
+// invocations: BigNumber {_hex: '0x00', _isBigNumber: true}
+// locked: false
+// manager: "0x0000000000000000000000000000000000000000"
+// maxInvocations: BigNumber {_hex: '0x64', _isBigNumber: true}
+// name: "Collection 1"
+// paused: true
+// projectId: BigNumber {_hex: '0x00', _isBigNumber: true}
+// royalties

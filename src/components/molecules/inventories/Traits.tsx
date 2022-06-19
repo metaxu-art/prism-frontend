@@ -20,12 +20,12 @@ const Traits: React.FC<Props> = ({
 	return (
 		<>
 			{traits.map((trait, i) => {
-				const checked = selectedTraitIds.includes(trait.tokenID);
+				const checked = selectedTraitIds.includes(trait.id);
 				return (
 					<Trait
 						onTraitToggled={() => onTraitToggled(trait, !checked)}
-						onArrowUpClick={() => onTraitArrowUpClicked(trait.tokenID)}
-						onArrowDownClick={() => onTraitArrowDownClick(trait.tokenID)}
+						onArrowUpClick={() => onTraitArrowUpClicked(trait.id)}
+						onArrowDownClick={() => onTraitArrowDownClick(trait.id)}
 						key={i}
 						trait={trait}
 						checked={checked}

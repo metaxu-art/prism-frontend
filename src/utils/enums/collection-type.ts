@@ -1,5 +1,5 @@
 export enum CollectionTypeEnum {
-	Master,
+	Standard,
 	Trait,
-	Other,
+	Master,
 }
