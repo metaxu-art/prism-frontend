@@ -48,7 +48,7 @@ const CreateProjectPage = () => {
 
 		if (project) {
 			receipt = await editProject();
-			console.log('edit project');
+			// console.log('edit project');
 			return;
 		} else {
 			receipt = await createProject();
