@@ -10,7 +10,7 @@ export interface Collection {
 	maxInvocation: number;
 	paused: boolean;
 	locked: boolean;
-	amountTokens: number;
+	maxSupply: number;
 	amountMinted: number;
 }
 
