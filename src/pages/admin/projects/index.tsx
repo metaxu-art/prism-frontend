@@ -82,7 +82,7 @@ const ProjectsPage = () => {
 								{owner}
 							</span>
 							<span className="overflow-hidden whitespace-nowrap text-ellipsis font-semibold text-2xl">
-								{collections}
+								{collections?.length}
 							</span>
 							<div className="flex items-center justify-between">
 								<div className="max-w-[400px]">
