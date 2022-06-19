@@ -9,6 +9,7 @@ import { StoreContext } from '_utils/context-api/store-context';
 import { Token } from '_utils/interfaces/token';
 import axios from 'axios';
 import BaseCenterModal from '_atoms/base-modals/CenterModal';
+import { FiExternalLink } from 'react-icons/fi';
 
 // const dummyTokens: Token[] = [
 // 	{
@@ -44,7 +45,7 @@ const CollectionsPage = () => {
 		let project;
 		try {
 			project = await axios.get(`/project/${query.projectId}`);
-			console.log('project', project);
+			// console.log('project', project);
 		} catch (e) {
 			console.error(`Failed to fetch a project by id ${query.projectId}. ${e}`);
 		}
@@ -55,7 +56,7 @@ const CollectionsPage = () => {
 		let collection;
 		try {
 			collection = await axios.get(`/collection/${query.projectId}`);
-			console.log('collection', collection);
+			// console.log('collection', collection);
 		} catch (e) {
 			console.error(`Failed to fetch a collection by id ${query.collectionId}. ${e}`);
 		}
@@ -92,45 +93,12 @@ const CollectionsPage = () => {
 		});
 	};
 
-	// const fetchTokens = async () => {
-	// 	try {
-	// 		const tokens = await signer?.tokensContract.tokensOfCollection(query.collectionId); // [Token1, Token2]
-	// 		const amountMintedTokensPromises = tokens.map((token: Token) =>
-	// 			signer?.tokensContract.totalSupply(token.id),
-	// 		);
-
-	// 		const mints: any[] = await Promise.all(amountMintedTokensPromises);
-
-	// 		setTokens(
-	// 			tokens.map((token: any, index: number) => {
-	// 				return {
-	// 					id: token.id.toNumber(),
-	// 					assetType: token.assetType,
-	// 					collectionId: token.collectionId.toNumber(),
-	// 					locked: token.locked,
-	// 					maxSupply: token.maxSupply.toNumber(),
-	// 					name: token.name,
-	// 					paused: token.paused,
-	// 					priceInWei: token.priceInWei.toString(),
-	// 					projectId: token.projectId.toNumber(),
-	// 					traitType: token.traitType,
-	// 					amountMinted: mints[index].toNumber(),
-	// 					creator: token.creator,
-	// 				};
-	// 			}),
-	// 		);
-	// 		console.log('tokens', tokens);
-	// 	} catch (e) {
-	// 		return console.error(`Fetching tokens failed ${e}`);
-	// 	}
-	// };
-
 	const fetchTokens = async () => {
 		let tokens;
 		try {
 			tokens = await axios.get(`/tokens?collectionId=${query.collectionId}`);
 		} catch (e) {
-			console.log(`Failed to fetch tokens. ${e}`);
+			console.error(`Failed to fetch tokens. ${e}`);
 		}
 
 		if (tokens?.data) setTokens([...tokens.data]);
@@ -160,9 +128,10 @@ const CollectionsPage = () => {
 					<span className="overflow-hidden font-semibold text-2xl"># max supply</span>
 					<span className="overflow-hidden font-semibold text-2xl"># amount minted</span>
 					<span className="overflow-hidden font-semibold text-2xl"># type</span>
-					<span className="overflow-hidden font-semibold text-2xl"># creator</span>
+
 					<span className="overflow-hidden font-semibold text-2xl"># tokenID</span>
 					<span className="overflow-hidden font-semibold text-2xl"># status</span>
+					<span className="overflow-hidden font-semibold text-2xl"># image</span>
 				</div>
 			</div>
 			<div className="flex-1 overflow-auto pb-5">
@@ -197,9 +166,7 @@ const CollectionsPage = () => {
 								<span className="overflow-hidden whitespace-nowrap text-ellipsis font-semibold text-2xl">
 									{traitType}
 								</span>
-								<span className="overflow-hidden whitespace-nowrap text-ellipsis font-semibold text-2xl">
-									{token.creator}
-								</span>
+
 								<span className="overflow-hidden whitespace-nowrap text-ellipsis font-semibold text-2xl">
 									{id}
 								</span>
@@ -215,6 +182,11 @@ const CollectionsPage = () => {
 										</button>
 									</div>
 								</div>
+								<span>
+									<a target="__blanket" href={token.image}>
+										<FiExternalLink className="text-2xl cursor-pointer" />
+									</a>
+								</span>
 							</div>
 						</div>
 					);
