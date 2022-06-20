@@ -6,12 +6,13 @@ export interface Collection {
 	projectId: number;
 	assetType: AssetType;
 	manager: string;
-	royalties: number;
-	maxInvocation: number;
+	royalties: string;
+	maxInvocation: string;
 	paused: boolean;
 	locked: boolean;
 	maxSupply: number;
 	amountMinted: number;
+	description: string;
 }
 
 // struct Collection {
