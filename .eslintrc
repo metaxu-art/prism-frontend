@@ -38,5 +38,5 @@
 			"version": "detect"
 		}
 	},
-	"ignorePatterns": ["src/assets/*"]
+	"ignorePatterns": ["src/assets/*", "out/*"]
 }
