@@ -128,7 +128,7 @@ const ProjectDetailPage = () => {
 									{id}
 								</span>
 								<div className="flex items-center justify-between">
-									<div className="max-w-[400px]">
+									<div className="max-w-[400px] pr-2">
 										<button
 											onClick={() => onStatusButtonClick(collection)}
 											className={`w-full ${
@@ -139,7 +139,25 @@ const ProjectDetailPage = () => {
 											{!paused && 'Unpaused'}
 										</button>
 									</div>
-									<Link href={`/admin/projects/${query.projectId}/${id}`}>
+
+									<div className="max-w-[400px] pr-2">
+										<Link href={`/admin/projects/${query.projectId}/${id}`} passHref>
+											<a>
+												<button className="w-full bg-black text-white px-4 rounded-md py-2 whitespace-nowrap">
+													View Tokens
+												</button>
+											</a>
+										</Link>
+									</div>
+
+									<Link
+										href={{
+											pathname: `/admin/projects/${query.projectId}/create-collection`,
+											query: {
+												collectionId: id,
+											},
+										}}
+									>
 										<a>
 											<FiEdit className="cursor-pointer text-2xl" />
 										</a>

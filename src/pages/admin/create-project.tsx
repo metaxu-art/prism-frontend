@@ -14,14 +14,12 @@ import axios from 'axios';
 const CreateProjectPage = () => {
 	const router = useRouter();
 	const { signer } = useContext(StoreContext);
-	const [name, setName] = useState('Project X');
+	const [name, setName] = useState('');
 
-	const [traitTypes, setTraitTypes] = useState('armour, skin, body, weapon');
-	const [desc, setDesc] = useState(
-		'CyberFrens is a multiverse Project exploring the intersection and capibilities of NFTs accross different virtual worlds.',
-	);
+	const [traitTypes, setTraitTypes] = useState('');
+	const [desc, setDesc] = useState('');
 	const [isLoading, setLoadingStatus] = useState(false);
-	const [projectUrl, setProjectUrl] = useState('https://cyberfrens.co/');
+	const [projectUrl, setProjectUrl] = useState('');
 	const [project, setProject] = useState<Project>();
 
 	const createProject = async () => {
@@ -39,7 +37,22 @@ const CreateProjectPage = () => {
 		}
 		return receipt;
 	};
-	const editProject = () => {};
+	const editProject = async () => {
+		let receipt;
+		try {
+			const tx = await signer?.projectContract.editProject(
+				project?.id,
+				name,
+				desc,
+				signer.address,
+				traitTypes.split(',').map((a) => a.trim()),
+			);
+			receipt = await tx.wait();
+		} catch (e) {
+			console.error('editing project failed', e);
+		}
+		return receipt;
+	};
 
 	const onCreateProjectClick = async () => {
 		setLoadingStatus(true);
@@ -48,8 +61,6 @@ const CreateProjectPage = () => {
 
 		if (project) {
 			receipt = await editProject();
-			// console.log('edit project');
-			return;
 		} else {
 			receipt = await createProject();
 		}
@@ -71,13 +82,32 @@ const CreateProjectPage = () => {
 
 	useEffect(() => {
 		if (router.query.projectId) fetchProject();
-	}, []);
+	}, [router.query.projectId]);
 
-	const btnIsActive =
-		name.trim().length !== 0 &&
-		traitTypes.trim().length !== 0 &&
-		desc.trim().length !== 0 &&
-		projectUrl.trim().length !== 0;
+	useEffect(() => {
+		if (project) {
+			setName(project.name);
+			setTraitTypes(project.traitTypes.join(','));
+			setProjectUrl(project.externalUrl || '');
+			setDesc(project.description || '');
+		}
+	}, [project]);
+
+	let btnIsActive = false;
+
+	if (project) {
+		btnIsActive =
+			name.trim() !== project.name.trim() ||
+			traitTypes.trim() !== project.traitTypes.join(',').trim() ||
+			projectUrl.trim() !== (project.externalUrl || '').trim() ||
+			desc.trim() !== (project.description || '').trim();
+	} else {
+		btnIsActive =
+			name.trim().length !== 0 &&
+			traitTypes.trim().length !== 0 &&
+			desc.trim().length !== 0 &&
+			projectUrl.trim().length !== 0;
+	}
 
 	return (
 		<div className="w-full h-full overflow-auto">
@@ -118,6 +148,7 @@ const CreateProjectPage = () => {
 							value={signer?.address}
 							onChange={(e) => {}}
 							label="Project Owner/Chef"
+							placeholder="0x492deFs34d...."
 						/>
 					</div>
 
