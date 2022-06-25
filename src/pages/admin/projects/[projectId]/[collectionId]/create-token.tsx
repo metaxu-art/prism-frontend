@@ -17,23 +17,20 @@ import PrimaryTextArea from '_atoms/PrimaryTextArea';
 import InteractiveAttributesInputs, {
 	AttributeInputValue,
 } from '_organisms/interactive-attributes-inputs';
+import BaseCenterModal from '_atoms/base-modals/CenterModal';
 
 const CreateTokenPage = () => {
 	const router = useRouter();
 	const { query } = router;
 	const { signer } = useContext(StoreContext);
-	const [name, setName] = useState('Token X');
-	const [maxSupply, setMaxSupply] = useState('100');
-	const [priceInWei, setPriceInWei] = useState('1000000');
+	const [name, setName] = useState('');
+	const [maxSupply, setMaxSupply] = useState('');
+	const [priceInWei, setPriceInWei] = useState('');
 	const [imageFile, setImageFile] = useState<File | null>(null);
-	const [selectedTraitType, setSelectedTraitType] = useState<DropdownValue>(
-		new TraitType(0, 'armour'),
-	);
+	const [selectedTraitType, setSelectedTraitType] = useState<DropdownValue>();
 	const [allTraitTypes, setAllTraitTypes] = useState<DropdownValue[]>([]);
 	const [collection, setCollection] = useState<Pick<Collection, 'assetType' | 'name'>>();
-	const [desc, setDesc] = useState(
-		'CyberFrens is a multiverse Project exploring the intersection and capibilities of NFTs accross different virtual worlds.',
-	);
+	const [desc, setDesc] = useState('');
 	const [isLoading, setLoadingStatus] = useState(false);
 	const [error, setError] = useState('');
 	const attributeValues = useRef<AttributeInputValue[]>([]);
@@ -105,6 +102,17 @@ const CreateTokenPage = () => {
 			});
 	};
 
+	const fetchProject = async () => {
+		let res;
+		try {
+			res = await axios.get(`/project/${query.projectId}`);
+			console.log('project', res.data);
+		} catch (e) {
+			console.error(`Failed to fetch a project by id ${query.projectId}. ${e}`);
+		}
+		if (res?.data) setDesc(res.data.description);
+	};
+
 	const fetchTraitTypes = async () => {
 		let res;
 		try {
@@ -146,6 +154,7 @@ const CreateTokenPage = () => {
 	useEffect(() => {
 		fetchCollection();
 		fetchTraitTypes();
+		fetchProject();
 	}, []);
 
 	const btnIsActive =
@@ -225,11 +234,10 @@ const CreateTokenPage = () => {
 						/>
 					</div>
 					<div className="pb-7">
-						<p className="font-bold text-xl pb-1">Project Description</p>
+						<p className="font-bold text-xl pb-1">Token Description</p>
 						<PrimaryTextArea
 							onChange={(e) => setDesc(e.target.value)}
-							placeholder="CyberFrens is a multiverse Project exploring the intersection and
-							capibilities of NFTs accross different virtual worlds."
+							placeholder="Token description..."
 							value={desc}
 						/>
 					</div>
@@ -244,6 +252,9 @@ const CreateTokenPage = () => {
 					</div>
 				</div>
 			</div>
+			<BaseCenterModal modalVisible={isLoading}>
+				<img src="/loading-gif.gif" />
+			</BaseCenterModal>
 		</div>
 	);
 };

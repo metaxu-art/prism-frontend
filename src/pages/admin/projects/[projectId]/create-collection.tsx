@@ -13,6 +13,8 @@ import { AssetType } from '_utils/enums/asset-type';
 import PrimaryTextArea from '_atoms/PrimaryTextArea';
 import { Collection } from '_utils/interfaces/collection';
 import axios from 'axios';
+import BaseCenterModal from '_atoms/base-modals/CenterModal';
+import { Project } from '_utils/interfaces/project';
 
 const collectionDropDownValues = [
 	new CollectionType(AssetType.Trait, 'Trait'),
@@ -29,11 +31,10 @@ const CreateCollectionPage = () => {
 	const [maxInvocation, setMaxInvocation] = useState('');
 	const [manager, setManager] = useState('');
 	const [desc, setDesc] = useState('');
-	const [selectedCollectionType, setSelectedCollectionType] = useState<DropdownValue>(
-		collectionDropDownValues[0],
-	);
+	const [selectedCollectionType, setSelectedCollectionType] = useState<DropdownValue>();
 	const [isLoading, setLoadingStatus] = useState(false);
 	const [collection, setCollection] = useState<Collection>();
+	const [project, setProject] = useState<Pick<Project, 'name'>>();
 
 	const createCollection = async () => {
 		let receipt;
@@ -44,7 +45,7 @@ const CreateCollectionPage = () => {
 				maxInvocation,
 				query.projectId,
 				manager || signer.address,
-				selectedCollectionType.id,
+				selectedCollectionType?.id,
 				royalties,
 			);
 			receipt = await tx.wait();
@@ -65,7 +66,7 @@ const CreateCollectionPage = () => {
 				maxInvocation,
 				manager,
 				royalties,
-				selectedCollectionType.id,
+				selectedCollectionType?.id,
 				collection?.paused,
 			);
 			receipt = await tx.wait();
@@ -80,15 +81,11 @@ const CreateCollectionPage = () => {
 
 		let receipt;
 
-		if (collection) {
-			receipt = await editCollection();
-		} else {
-			receipt = await createCollection();
-		}
+		if (collection) receipt = await editCollection();
+		else receipt = await createCollection();
 
-		if (receipt) {
-			router.push(`/admin/projects/${query.projectId}`);
-		}
+		if (receipt) router.push(`/admin/projects/${query.projectId}`);
+
 		setLoadingStatus(false);
 	};
 
@@ -101,6 +98,16 @@ const CreateCollectionPage = () => {
 			console.error(`Failed to fetch a collection by id ${router.query.collectionId}. ${e}`);
 		}
 		if (collection?.data) setCollection(collection.data);
+	};
+
+	const fetchProject = async () => {
+		let project;
+		try {
+			project = await axios.get(`/project/${query.projectId}`);
+		} catch (e) {
+			console.error(`Failed to fetch a project by id ${query.projectId}. ${e}`);
+		}
+		if (project?.data) setProject(project.data);
 	};
 
 	useEffect(() => {
@@ -116,30 +123,28 @@ const CreateCollectionPage = () => {
 
 	useEffect(() => {
 		if (router.query.collectionId) fetchCollection();
+		fetchProject();
 	}, [router.query.collectionId]);
+
+	useEffect(() => {
+		fetchProject();
+	}, []);
 
 	let btnIsActive = false;
 
-	if (collection) {
-		console.log(collection);
-		console.log('name', name);
-		console.log('desc', desc);
-		console.log('royalties', royalties);
-		console.log('maxInvocation', maxInvocation);
-		console.log('manager', manager);
+	if (collection)
 		btnIsActive =
 			name.trim() !== collection.name.trim() ||
 			desc.trim() !== collection.description ||
 			royalties.trim() !== collection.royalties.trim() ||
 			maxInvocation.trim() !== collection.maxInvocation.trim() ||
 			manager.trim() !== collection.manager.trim() ||
-			collection.assetType !== selectedCollectionType.id;
-	} else {
+			collection.assetType !== selectedCollectionType?.id;
+	else
 		btnIsActive =
 			name.trim().length !== 0 &&
 			royalties.trim().length !== 0 &&
 			maxInvocation.trim().length !== 0;
-	}
 
 	return (
 		<div className="w-full h-full overflow-auto">
@@ -151,7 +156,7 @@ const CreateCollectionPage = () => {
 			<div className="mb-16">
 				<AdminNavigationbar
 					title="Create Collection"
-					backLinkText={`PROJECT	#${query.projectId}`}
+					backLinkText={project?.name}
 					backLinkHref={`/admin/projects/${query.projectId}`}
 				/>
 			</div>
@@ -167,7 +172,7 @@ const CreateCollectionPage = () => {
 						/>
 					</div>
 					<div className="pb-7">
-						<p className="font-bold text-xl pb-1">Project Description</p>
+						<p className="font-bold text-xl pb-1">Collection Description</p>
 						<PrimaryTextArea
 							onChange={(e) => setDesc(e.target.value)}
 							placeholder="CyberFrens is a multiverse Project exploring the intersection and
@@ -203,7 +208,7 @@ const CreateCollectionPage = () => {
 							label="Collaborator"
 							placeholder="e.g. 0xaF33...C1f (optional)"
 						/>
-						<span className="text-sm font-bold text-red-600">
+						<span className="text-sm font-bold text-yellow-500">
 							If you leave this input field empty by default you will be the collaborator
 						</span>
 					</div>
@@ -219,11 +224,16 @@ const CreateCollectionPage = () => {
 
 					<div className="max-w-[250px]">
 						<PrimaryButton isActive={!isLoading && btnIsActive} onClick={onCreateCollectionClick}>
-							<p className="py-2 uppercase font-bold">CREATE COLLECTION</p>
+							<p className="py-2 uppercase font-bold">
+								{collection ? 'edit collection' : 'create collection'}
+							</p>
 						</PrimaryButton>
 					</div>
 				</div>
 			</div>
+			<BaseCenterModal modalVisible={isLoading}>
+				<img src="/loading-gif.gif" />
+			</BaseCenterModal>
 		</div>
 	);
 };

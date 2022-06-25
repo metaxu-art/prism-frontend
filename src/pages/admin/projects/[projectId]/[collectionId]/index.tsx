@@ -137,9 +137,7 @@ const CollectionsPage = () => {
 			<div className="flex-1 overflow-auto pb-5">
 				{tokens.length === 0 && (
 					<div className="flex justify-center items-center h-full">
-						<span className="uppercase text-3xl font-bold">
-							YOU DON’T HAVE ANY collections YET.
-						</span>
+						<span className="uppercase text-3xl font-bold">YOU DON’T HAVE ANY tokens YET.</span>
 					</div>
 				)}
 
