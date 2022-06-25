@@ -55,7 +55,7 @@ const CollectionsPage = () => {
 	const fetchCollection = async () => {
 		let collection;
 		try {
-			collection = await axios.get(`/collection/${query.projectId}`);
+			collection = await axios.get(`/collection/${query.collectionId}`);
 			// console.log('collection', collection);
 		} catch (e) {
 			console.error(`Failed to fetch a collection by id ${query.collectionId}. ${e}`);
