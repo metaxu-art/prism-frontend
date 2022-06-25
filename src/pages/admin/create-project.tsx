@@ -10,6 +10,7 @@ import AdminNavigationbar from '_molecules/AdminNavigationbar';
 import PrimaryTextArea from '_atoms/PrimaryTextArea';
 import { Project } from '_utils/interfaces/project';
 import axios from 'axios';
+import BaseCenterModal from '_atoms/base-modals/CenterModal';
 
 const CreateProjectPage = () => {
 	const router = useRouter();
@@ -59,11 +60,8 @@ const CreateProjectPage = () => {
 
 		let receipt;
 
-		if (project) {
-			receipt = await editProject();
-		} else {
-			receipt = await createProject();
-		}
+		if (project) receipt = await editProject();
+		else receipt = await createProject();
 
 		if (receipt) router.push('/admin/projects');
 
@@ -180,6 +178,9 @@ const CreateProjectPage = () => {
 					</div>
 				</div>
 			</div>
+			<BaseCenterModal modalVisible={isLoading}>
+				<img src="/loading-gif.gif" />
+			</BaseCenterModal>
 		</div>
 	);
 };
