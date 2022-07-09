@@ -37,10 +37,17 @@ const ProjectsPage = () => {
 	}, []);
 
 	return (
-		<div className="w-full h-full flex flex-col">
+		<div className="w-full h-full flex flex-col"
+		style={{
+			backgroundImage: 'url("/images/background-image.png")',
+			backgroundSize: 'cover'
+		}}
+		
+		>
 			<Head>
 				<title>Prism | Admin Projects</title>
 			</Head>
+			
 
 			<NavigationBar />
 
@@ -48,14 +55,20 @@ const ProjectsPage = () => {
 
 			<div className="py-5 px-10 2xl:px-0">
 				<div className="grid grid-cols-5 gap-5 max-w-[1536px] mx-auto">
-					<span className="overflow-hiden whitespace-nowrap text-ellipsis font-semibold text-2xl">
-						# name
+					<span className="overflow-hiden whitespace-nowrap text-ellipsis text-2xl text-white">
+						name
 					</span>
-					<span className="overflow-hidden whitespace-nowrap text-ellipsis font-semibold text-2xl">
-						# creator
+					<span className="overflow-hidden whitespace-nowrap text-ellipsis text-2xl text-white">
+						creator address
 					</span>
-					<span className="overflow-hidden whitespace-nowrap text-ellipsis font-semibold text-2xl">
+					<span className="overflow-hidden whitespace-nowrap text-ellipsis text-2xl text-white">
 						# collections
+					</span>
+					<span className="overflow-hidden whitespace-nowrap text-ellipsis text-2xl text-white">
+						enter projects 
+					</span>
+					<span className="overflow-hidden whitespace-nowrap text-ellipsis text-2xl text-white">
+						edit project
 					</span>
 				</div>
 			</div>
@@ -63,14 +76,14 @@ const ProjectsPage = () => {
 			<div className="flex-1 overflow-auto pb-5">
 				{projects.length === 0 && (
 					<div className="flex justify-center items-center h-full px-10 2xl:px-0">
-						<span className="uppercase text-3xl font-bold">YOU DON’T HAVE ANY PROJECTS YET.</span>
+						<span className="text-2xl opacity-80 text-white "> There are no projects yet</span>
 					</div>
 				)}
 
 				{projects.map(({ id, name, collections, owner }, index) => (
 					<div
 						key={id}
-						className={`border-black ${
+						className={`border-white ${
 							projects.length - 1 === index && 'border-b-2'
 						} border-t-2 py-2 px-10 2xl:px-0`}
 					>
@@ -88,7 +101,7 @@ const ProjectsPage = () => {
 								<div className="max-w-[400px]">
 									<Link href={`/admin/projects/${id}`} passHref>
 										<a>
-											<button className="w-full bg-black text-white px-4 rounded-md py-2">
+											<button className="w-full outline outline-white text-white px-4 rounded-md py-2">
 												View Collection
 											</button>
 										</a>

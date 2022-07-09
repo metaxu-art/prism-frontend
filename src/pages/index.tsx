@@ -23,14 +23,15 @@ const Home: NextPage = () => {
 			onClick={onDocumentClick}
 			style={{
 				backgroundImage: 'url("/images/background-image.png")',
+				backgroundSize: 'cover'
 			}}
-			className="relative w-screen h-screen flex flex-col overflow-y-auto"
+			className="relative w-screen h-screen flex flex-col overflow-y-auto overflow-auto"
 		>
 			<Head>
 				<title>Prism | Welcome</title>
 			</Head>
 
-			<NavigationBar />
+			<NavigationBar/>
 
 			<div className="flex-1 w-full overflow-hidden mx-auto flex justify-center items-center">
 				{!isUserAuthenticated && (

@@ -108,7 +108,13 @@ const CreateProjectPage = () => {
 	}
 
 	return (
-		<div className="w-full h-full overflow-auto">
+		<div 
+			className="w-full h-full overflow-auto"
+			style={{
+				backgroundImage: 'url("/images/background-image.png")',
+				backgroundSize: 'cover'
+			}}
+		>
 			<Head>
 				<title>Prism | Create Project</title>
 			</Head>
@@ -121,7 +127,7 @@ const CreateProjectPage = () => {
 				/>
 			</div>
 
-			<div className="w-full max-w-[1536px] mx-auto px-10 2xl:px-0">
+			<div className="w-full max-w-[1536px] mx-auto px-10 2xl:px-0  text-white text-opacity-80">
 				<div className="w-full max-w-[700px]">
 					<div className="pb-7">
 						<LabelPrimaryInput
@@ -137,7 +143,7 @@ const CreateProjectPage = () => {
 							value={traitTypes}
 							onChange={(e) => setTraitTypes(e.target.value)}
 							label="Trait Types"
-							placeholder="armour, skin, body, weapon"
+							placeholder="E.g. armour, skin, body, weapon"
 						/>
 					</div>
 
@@ -155,23 +161,23 @@ const CreateProjectPage = () => {
 							value={projectUrl}
 							onChange={(e) => setProjectUrl(e.target.value)}
 							label="Project Url"
-							placeholder="e.g. https://cyberfrens.co/"
+							placeholder="E.g. https://cyberfrens.co/"
 						/>
 					</div>
 
 					<div className="pb-7">
-						<p className="font-bold text-xl pb-1">Project Description</p>
+						<p className="text-l pb-2 text-white">Project Description</p>
 						<PrimaryTextArea
 							onChange={(e) => setDesc(e.target.value)}
-							placeholder="CyberFrens is a multiverse Project exploring the intersection and
+							placeholder="E.g. CyberFrens is a multiverse Project exploring the intersection and
 							capibilities of NFTs accross different virtual worlds."
 							value={desc}
 						/>
 					</div>
 
-					<div className="max-w-[250px]">
+					<div className="max-w-[250px] pb-7">
 						<PrimaryButton isActive={!isLoading && btnIsActive} onClick={onCreateProjectClick}>
-							<p className="py-2 uppercase font-bold">
+							<p className="py-1 uppercase font-bold">
 								{project ? 'Edit Project' : 'Create Project'}
 							</p>
 						</PrimaryButton>

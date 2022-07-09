@@ -24,12 +24,12 @@ const NavigationBar = () => {
 	};
 
 	return (
-		<div className="w-full sticky top-0 z-10 py-4 2xl:py-8 bg-black">
+		<div className="w-full sticky top-0 z-10 py-4 2xl:py-8">
 			<div className="flex items-center justify-between max-w-[1536px] mx-auto px-10 2xl:px-0">
 				{/* <span className="text-3xl font-semibold text-white">PRISM</span> */}
 				<Link href="/" passHref>
 					<a>
-						<span className="text-4xl font-semibold text-white">PRISM</span>
+						<span className="text-4xl font-extralight text-white">PRISM</span>
 					</a>
 				</Link>
 				<div className="w-full max-w-[300px]">
