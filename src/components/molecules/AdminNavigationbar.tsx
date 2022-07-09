@@ -9,18 +9,18 @@ type Props = {
 
 const AdminNavigationbar: React.FC<Props> = ({ title, backLinkText, backLinkHref = '' }) => {
 	return (
-		<div className="w-full border-b-2 border-black py-5 px-10 2xl:px-0">
-			<div className="flex items-center justify-between max-w-[1536px] mx-auto">
+		<div className="w-full border-b-2 border-white border-opacity-20 py-5 px-10s 2xl:px-0">
+			<div className="flex items-center justify-between max-w-[1536px] mx-auto text-white">
 				<div className="w-1/4">
 					<Link href={backLinkHref} passHref>
 						<a className="flex items-center">
-							<FiChevronLeft className="text-4xl mr-4" />
-							<span className="uppercase text-xl font-semibold">{backLinkText}</span>
+							<FiChevronLeft className="text-4xl mr-4 text-white" />
+							<span className="uppercase text-xl font-semibold text-white">{backLinkText}</span>
 						</a>
 					</Link>
 				</div>
 				<div className="w-2/4 flex justify-center">
-					<span className="text-5xl font-bold">{title}</span>
+					<span className="text-4xl font-bold">{title}</span>
 				</div>
 				<div className="w-1/4"></div>
 			</div>

@@ -7,7 +7,7 @@ const LabelPrimaryInput: React.FC<Props> = (props) => {
 	const { label } = props;
 	return (
 		<>
-			<p className="font-bold text-xl pb-1">{label}</p>
+			<p className=" text-l pb-2 text-white text-opacity-100">{label}</p>
 			<PrimaryInput {...props} />
 		</>
 	);

@@ -22,8 +22,8 @@ import Link from 'next/link';
 
 const SelectAdminComposeView = () => {
 	return (
-		<div className="w-full max-w-[600px] mx-auto bg-white py-16 px-16 rounded-lg flex flex-col items-center">
-			<div className="relative w-[250px] h-[205px] rounded-lg overflow-hidden bg-red-200 mb-8">
+		<div className="w-full max-w-[600px] mx-auto shadow-l  py-16 px-16 rounded-lg flex flex-col items-center">
+			<div className="relative w-[250px] h-[205px] rounded-lg overflow-hidden bg-red-200 mb-8 border-2 border-opacity-50">
 				<Image src="/images/prism.png" alt="Prism logo" layout="fill" />
 			</div>
 			<div className="w-full flex items-center">
@@ -31,7 +31,7 @@ const SelectAdminComposeView = () => {
 					<Link href="/admin/projects" passHref>
 						<a>
 							<TertiaryButton>
-								<span className="uppercase font-bold">Admin view</span>
+								<span className="uppercase font-bold">FOR ARTISTS</span>
 							</TertiaryButton>
 						</a>
 					</Link>
@@ -40,7 +40,7 @@ const SelectAdminComposeView = () => {
 					<Link href="/compose" passHref>
 						<a>
 							<TertiaryButton>
-								<span className="uppercase font-bold">Compose Nfts</span>
+								<span className="uppercase font-bold">FOR COLLECTORS</span>
 							</TertiaryButton>
 						</a>
 					</Link>
