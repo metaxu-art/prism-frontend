@@ -22,8 +22,8 @@ import Link from 'next/link';
 
 const SelectAdminComposeView = () => {
 	return (
-		<div className="w-full max-w-[600px] mx-auto border-2 shadow-lg  bg-white py-16 px-16 rounded-lg flex flex-col items-center">
-			<div className="relative w-[250px] h-[205px] rounded-lg overflow-hidden bg-red-200 mb-8">
+		<div className="w-full max-w-[600px] mx-auto shadow-l  py-16 px-16 rounded-lg flex flex-col items-center">
+			<div className="relative w-[250px] h-[205px] rounded-lg overflow-hidden bg-red-200 mb-8 border-2 border-opacity-50">
 				<Image src="/images/prism.png" alt="Prism logo" layout="fill" />
 			</div>
 			<div className="w-full flex items-center">

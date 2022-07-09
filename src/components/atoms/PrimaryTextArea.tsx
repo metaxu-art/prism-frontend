@@ -11,7 +11,7 @@ const PrimaryTextArea: React.FC<Props> = ({ value, onChange, placeholder }) => {
 		<textarea
 			onChange={onChange}
 			placeholder={placeholder}
-			className="w-full border border-white rounded-lg px-3 py-3 bg-inherit value-white"
+			className="w-full border border-white rounded-lg px-3 py-3 bg-inherit"
 			cols={30}
 			rows={5}
 			value={value}
